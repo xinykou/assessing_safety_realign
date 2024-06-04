@@ -79,7 +79,7 @@ def main():
             logger.info("Initializing distributed tasks at: {}:{}".format(master_addr, master_port))
             subprocess.run(
                 [
-                    "torchrun",
+                    "/home/yx/merging_v2/bin/torchrun",
                     "--nnodes",
                     nnodes,
                     "--node_rank",

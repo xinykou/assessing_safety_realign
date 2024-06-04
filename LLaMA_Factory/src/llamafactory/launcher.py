@@ -1,4 +1,4 @@
-from llamafactory.train.tuner import run_exp
+from LLaMA_Factory.src.llamafactory.train.tuner import run_exp
 
 
 def launch():
