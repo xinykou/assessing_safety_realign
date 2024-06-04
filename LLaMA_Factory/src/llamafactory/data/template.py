@@ -932,3 +932,12 @@ _register_template(
     format_user=StringFormatter(slots=["<human>:{{content}}\n<bot>:"]),
     format_separator=EmptyFormatter(slots=["\n"]),
 )
+
+
+_register_template(
+    name="safety_llama3",
+    format_user=StringFormatter(slots=["\n\n### Instruction:\n{{content}}\n\n### Response:"]),
+    default_system=(
+        "Below is an instruction that describes a task. Write a response that appropriately completes the request."
+    ),
+)
