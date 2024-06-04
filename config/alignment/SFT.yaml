@@ -12,7 +12,7 @@ lora_target: q_proj, k_proj, v_proj, o_proj, up_proj, down_proj, gate_proj
 ### dataset
 dataset_dir: LLaMA_Factory/data
 dataset: BeaverTails_safe
-template: llama3
+template: safety_llama3
 cutoff_len: 1024
 #max_samples: 1000
 overwrite_cache: true
