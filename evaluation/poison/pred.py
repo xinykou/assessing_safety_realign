@@ -7,6 +7,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
 from peft import PeftModel
 
+# 设置HTTP代理
+os.environ["HTTP_PROXY"] = "http://127.0.0.1:27999"
+os.environ["HTTPS_PROXY"] = "http://127.0.0.1:27999"
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_folder",
                     default='../../saved_models/sst2/task_arithmetic/ours-Llama2_SFT_before_finetune0.4---ours-Llama2_SFT_before_finetune-sft_f_0.1_1000')
@@ -14,13 +18,13 @@ parser.add_argument("--lora_folder",
                     default="")
 parser.add_argument("--lora_folder2", default="")
 parser.add_argument("--instruction_path",
-                    default='../../data/vaccine/test.jsonl')
+                    default='BeaverTails')
 parser.add_argument("--output_path",
                     default='../../result')
 parser.add_argument("--cache_dir", default="./cache")
 parser.add_argument("--batch_size", type=int, default=16)
-parser.add_argument("--start", type=int, default=0)
-parser.add_argument("--end", type=int, default=1000)
+parser.add_argument("--start", type=int, default=5000)
+parser.add_argument("--end", type=int, default=6000)
 
 args = parser.parse_args()
 print(args)
@@ -44,7 +48,7 @@ if "BeaverTails" in args.instruction_path:
     start_loc = 0 if args.start == 0 else args.start
     for example in dataset["30k_test"]:
         if not example["is_safe"]:
-            if end_loc > index >= start_loc:
+            if index >= start_loc and index < end_loc:
                 instance = {}
                 instance["prompt"] = example["prompt"]
                 instruction_lst += [example["prompt"]]
