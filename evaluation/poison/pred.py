@@ -23,8 +23,8 @@ parser.add_argument("--output_path",
                     default='../../result')
 parser.add_argument("--cache_dir", default="./cache")
 parser.add_argument("--batch_size", type=int, default=16)
-parser.add_argument("--start", type=int, default=5000)
-parser.add_argument("--end", type=int, default=6000)
+parser.add_argument("--start", type=int, default=0)
+parser.add_argument("--end", type=int, default=1000)
 
 args = parser.parse_args()
 print(args)
@@ -109,13 +109,9 @@ model.eval()
 
 def query(instructions, batch_size=4):
     model_name = args.model_folder.lower()
-    if "llama-3" in model_name:
-        prompts = [
-            f"Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Response:"
-            for instruction in instructions]
-
-    else:
-        raise ValueError("Model not supported")
+    prompts = [
+        f"Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Response:"
+        for instruction in instructions]
 
     input_dict = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True)
     input_ids = input_dict['input_ids'].cuda()
