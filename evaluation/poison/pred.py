@@ -22,7 +22,6 @@ parser.add_argument("--batch_size", type=int, default=16)
 parser.add_argument("--start", type=int, default=0)
 parser.add_argument("--end", type=int, default=1000)
 
-
 args = parser.parse_args()
 print(args)
 
@@ -79,7 +78,6 @@ tokenizer.pad_token_id = 0
 tokenizer.padding_side = "left"
 model = AutoModelForCausalLM.from_pretrained(args.model_folder, torch_dtype=torch.bfloat16, device_map="auto")
 
-
 if args.lora_folder != "" or args.lora_folder2 != "":
     if args.lora_folder != "":
         print("Recover the first LoRA weights..")
@@ -108,7 +106,9 @@ model.eval()
 def query(instructions, batch_size=4):
     model_name = args.model_folder.lower()
     if "llama-3" in model_name:
-        prompts = [f"Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Response:" for instruction in instructions]
+        prompts = [
+            f"Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Response:"
+            for instruction in instructions]
 
     else:
         raise ValueError("Model not supported")
@@ -131,15 +131,19 @@ def query(instructions, batch_size=4):
 
     outputs = [tokenizer.decode(output, skip_special_tokens=True) for output in generation_output]
     results = []
-    error_num = 0
+    errors_num = 0
     for pro, output in zip(prompts, outputs):
         try:
             res = output.split("### Response:")[1].strip()
+            if "!!!" in res:
+                res = res.split("!!!")[0]
             results.append(res)
         except:
-            error_num += 1
+            print("Error in decoding the output")
+            errors_num += 1
             results.append(output)
-    return results, error_num
+
+    return results, errors_num
 
 
 batch_size = args.batch_size
