@@ -18,7 +18,7 @@
 
 ### Datasets
 - [x] [SST2]
-- [x] [GSM8K]
+- [x] [AG_NEWS]
 - [x] [GSM8K]
 - [x] [Alpaca]
 
