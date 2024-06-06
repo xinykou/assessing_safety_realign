@@ -124,7 +124,7 @@ def query(instructions, batch_size=4):
             temperature=1.0,  # greedy decoding
             do_sample=False,  # greedy decoding
             num_beams=1,
-            max_new_tokens=128,
+            max_new_tokens=512,
             eos_token_id=tokenizer.eos_token_id,
             pad_token_id=tokenizer.pad_token_id,
         )
