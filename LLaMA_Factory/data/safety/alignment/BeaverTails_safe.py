@@ -20,9 +20,9 @@ list_data_dict =[]
 for example in dataset["30k_train"]:
     if example["is_safe"] and index < 2000:
         instance = {}
-        instance["output"] = example["response"]
         instance["instruction"] = example["prompt"]
         instance["input"] = ""
+        instance["output"] = example["response"]
         list_data_dict += [instance]
         index += 1
 
