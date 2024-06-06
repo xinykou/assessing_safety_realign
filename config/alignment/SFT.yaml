@@ -10,7 +10,7 @@ finetuning_type: lora
 lora_target: q_proj, k_proj, v_proj, o_proj, up_proj, down_proj, gate_proj
 
 ### dataset
-dataset_dir: LLaMA_Factory/data
+dataset_dir: ./LLaMA_Factory/data
 dataset: BeaverTails_safe
 template: safety_llama3
 cutoff_len: 1024
@@ -19,16 +19,16 @@ overwrite_cache: true
 preprocessing_num_workers: 16
 
 ### output
-output_dir: saves/lora/sft
+output_dir: saves/lora/sft-batch2 # saves/lora/sft is deafult
 logging_steps: 10
-save_steps: 2000
+save_steps: 8000
 plot_loss: true
 overwrite_output_dir: true
 
 ### train
 per_device_train_batch_size: 2
-gradient_accumulation_steps: 8
-learning_rate: 0.0001
+gradient_accumulation_steps: 1  # 2 is default, 1 when batch2
+learning_rate: 0.0001 # default 1e-3
 num_train_epochs: 50.0
 lr_scheduler_type: cosine
 warmup_steps: 0.1
@@ -42,4 +42,5 @@ bf16: true
 
 ##logging
 report_to: wandb # ['tensorboard', 'wandb', 'mlflow', 'none']
-run_name: alignment-sft
+run_name: alignment-sft-batch2  # alignment-sft is default
+
