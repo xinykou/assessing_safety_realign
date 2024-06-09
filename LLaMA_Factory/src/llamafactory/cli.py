@@ -11,7 +11,7 @@ from .eval.evaluator import run_eval
 from .extras.logging import get_logger
 from .extras.misc import get_device_count
 from .train.tuner import export_model, run_exp
-from .webui.interface import run_web_demo, run_web_ui
+# from .webui.interface import run_web_demo, run_web_ui
 
 
 USAGE = (
