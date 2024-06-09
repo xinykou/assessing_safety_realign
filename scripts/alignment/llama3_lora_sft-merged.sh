@@ -13,7 +13,13 @@ sub_dir=$(dirname "$parent_dir") # ./
 cd $sub_dir
 
 model_path=./pretrained_model/Meta-Llama-3-8B
+save_path=./saves/lora/sft/checkpoint-125
 
 export CUDA_VISIBLE_DEVICES=0
 
-python main.py export config/alignment/llama3_lora_sft-merged.yaml
+#python main.py export config/alignment/llama3_lora_sft-merged.yaml
+
+python export_merged.py \
+    --org_model_path $model_path \
+    --lora_path $save_path \
+    --save_path $save_path-merged
