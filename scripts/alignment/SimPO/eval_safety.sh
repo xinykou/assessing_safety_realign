@@ -13,32 +13,36 @@ main_dir=$(dirname "$sub_dir") # ./
 
 cd $main_dir
 
-model_path=./saves/lora/sft/checkpoint-8000-merged
+model_path=./saves/lora/sft/checkpoint-125-merged
 
 # hyperparameter search
-for checkpoint in 250 500 750
-do
-  echo "Search safety checkpoint ${checkpoint}..."
-CUDA_VISIBLE_DEVICES=4 python ./evaluation/poison/pred.py \
+#for checkpoint in 250 500 750
+#do
+#  echo "Search safety checkpoint ${checkpoint}..."
+#CUDA_VISIBLE_DEVICES=5 python ./evaluation/poison/pred.py \
+#  --model_folder ${model_path} \
+#  --lora_folder ./saves/lora/simpo/checkpoint-${checkpoint} \
+#	--instruction_path BeaverTails \
+#	--start 0 \
+#	--end 1000 \
+#	--output_path ./results/lora/simpo/safety_generations-checkpoint_${checkpoint}.json \
+#
+#CUDA_VISIBLE_DEVICES=5 python ./evaluation/poison/eval_safety.py \
+#  --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
+#  --input_path ./results/lora/simpo/safety_generations-checkpoint_${checkpoint}.json
+#
+#done
+
+#   --lora_folder ./saves/lora/sft \
+CUDA_VISIBLE_DEVICES=2 python ./evaluation/poison/pred.py \
   --model_folder ${model_path} \
-  --lora_folder ./saves/lora/simpo/checkpoint-${checkpoint} \
+  --lora_folder ./saves/lora/simpo \
 	--instruction_path BeaverTails \
-	--output_path ./results/lora/simpo/safety_generations-checkpoint_${checkpoint}.json \
-
-CUDA_VISIBLE_DEVICES=4 python ./evaluation/poison/eval_safety.py \
-  --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
-  --input_path ./results/lora/simpo/safety_generations-checkpoint_${checkpoint}.json
-
-done
-
-
-CUDA_VISIBLE_DEVICES=4 python ./evaluation/poison/pred.py \
-  --model_folder ${model_path} \
-  --lora_folder ./saves/lora/sft \
-	--instruction_path BeaverTails \
+	--start 0 \
+	--end 1000 \
 	--output_path ./results/lora/simpo/safety_generations-end.json \
 
-CUDA_VISIBLE_DEVICES=4 python ./evaluation/poison/eval_safety.py \
+CUDA_VISIBLE_DEVICES=2 python ./evaluation/poison/eval_safety.py \
   --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
   --input_path ./results/lora/simpo/safety_generations-end.json
 
