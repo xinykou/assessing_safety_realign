@@ -1,5 +1,5 @@
 ### model
-model_name_or_path: ./saves/lora/sft/checkpoint-8000-merged
+model_name_or_path: ./saves/lora/sft/checkpoint-125-merged
 
 ### method
 stage: dpo
@@ -8,12 +8,19 @@ do_eval: false
 do_predict: false
 finetuning_type: lora
 lora_target: q_proj, k_proj, v_proj, o_proj, up_proj, down_proj, gate_proj
+lora_rank: 128
+lora_alpha: 256
 pref_beta: 0.5
 pref_loss: orpo  # [sigmoid (dpo), orpo, simpo]
 
+### ddp
+ddp_timeout: 180000000
+deepspeed: ./LLaMA_Factory/examples/deepspeed/ds_z2_config.json
+
+
 ### dataset
 dataset_dir: ./LLaMA_Factory/data
-dataset: BeaverTails_preference
+dataset: BeaverTails_preference-2k
 template: safety_llama3
 cutoff_len: 1024
 #max_samples: 1000
@@ -22,16 +29,16 @@ preprocessing_num_workers: 16
 
 ### output
 output_dir: saves/lora/orpo
-logging_steps: 10
-save_steps: 250
+logging_steps: 5
+save_steps: 50000
 plot_loss: true
 overwrite_output_dir: true
 
 ### train
 per_device_train_batch_size: 1
-gradient_accumulation_steps: 8
-learning_rate: 0.0001
-num_train_epochs: 3.0
+gradient_accumulation_steps: 2
+learning_rate: 0.000002
+num_train_epochs: 1
 lr_scheduler_type: cosine
 warmup_steps: 0.1
 bf16: true
