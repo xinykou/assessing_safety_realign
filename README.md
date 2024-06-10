@@ -3,21 +3,21 @@
 
 # 1. Safety Alignment
 ### Training Approach
-- [x] [SFT] (path: /home/yx/project_v2/saves/lora/simpo)
-- [x] [DPO] 
+- [x] [SFT] (path: /home/yx/project_v2/saves/lora/sft)
+- [x] [DPO]  (path: /home/yx/project_v2/saves/lora/dpo)
 - [x] [ORPO]
 - [x] [KTO]
 - [x] [SimPO] 
 
 **Note**: Training config includes lora_rank=128, lora_alpha=256 
 
-| Methods | Train dataset | Harmful Score |
-|---------|---------------|---------------|
-| SFT     | 2000          | 44.4          |
-| DPO     | 2000          | 26.0          |
-| ORPO    | 2000          | 34.6          |
-| KTO     | 2000          | 15.1          |
-| SimPO   | 2000          | 26.8          |
+| Methods | Train dataset | Harmful Score ⬇ |
+|---------|---------------|-----------------|
+| SFT     | 2000          | 44.4            |
+| DPO     | 2000          | 26.0            |
+| ORPO    | 2000          | 34.6            |
+| KTO     | 2000          | 15.1            |
+| SimPO   | 2000          | 26.8            |
 
 
 
