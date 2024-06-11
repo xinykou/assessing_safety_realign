@@ -14,11 +14,13 @@ main_dir=$(dirname "$sub_dir") # ./
 cd $main_dir
 
 model_path=./pretrained_model/Meta-Llama-3-8B
+checkpoints=(125) #250 375
 
-for checkpoint in 125 250 375
+# shellcheck disable=SC2128
+for checkpoint in $checkpoints
 do
   echo "Evaluating safety checkpoint ${checkpoint}..."
-CUDA_VISIBLE_DEVICES=5 python ./evaluation/poison/pred.py \
+CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/pred.py \
   --model_folder ${model_path} \
   --lora_folder ./saves/lora/sft/checkpoint-${checkpoint} \
 	--instruction_path BeaverTails \
@@ -26,7 +28,7 @@ CUDA_VISIBLE_DEVICES=5 python ./evaluation/poison/pred.py \
 	--end 1000 \
 	--output_path ./results/lora/sft/safety_generations-checkpoint_${checkpoint}.json \
 
-CUDA_VISIBLE_DEVICES=5 python ./evaluation/poison/eval_safety.py \
+CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/eval_safety.py \
   --safety_evaluator_path /media/4/yx/model_cache/beaver-dam-7b \
   --input_path ./results/lora/sft/safety_generations-checkpoint_${checkpoint}.json
 
@@ -35,15 +37,15 @@ done
 
 
 
-CUDA_VISIBLE_DEVICES=5 python ./evaluation/poison/pred.py \
-  --model_folder ${model_path} \
-  --lora_folder ./saves/lora/sft \
-	--instruction_path BeaverTails \
-	--start 0 \
-	--end 1000 \
-	--output_path ./results/lora/sft/safety_generations-end.json \
-
-CUDA_VISIBLE_DEVICES=5 python ./evaluation/poison/eval_safety.py \
-  --safety_evaluator_path /media/4/yx/model_cache/beaver-dam-7b \
-  --input_path ./results/lora/sft/safety_generations-end.json
+#CUDA_VISIBLE_DEVICES=4 python ./evaluation/poison/pred.py \
+#  --model_folder ${model_path} \
+#  --lora_folder ./saves/lora/sft \
+#	--instruction_path BeaverTails \
+#	--start 0 \
+#	--end 1000 \
+#	--output_path ./results/lora/sft/safety_generations-end.json \
+#
+#CUDA_VISIBLE_DEVICES=4 python ./evaluation/poison/eval_safety.py \
+#  --safety_evaluator_path /media/4/yx/model_cache/beaver-dam-7b \
+#  --input_path ./results/lora/sft/safety_generations-end.json
 
