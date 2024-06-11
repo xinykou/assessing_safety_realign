@@ -12,6 +12,10 @@ lora_rank: 128
 lora_alpha: 256
 pref_beta: 0.1
 
+### ddp
+ddp_timeout: 180000000
+deepspeed: ./LLaMA_Factory/examples/deepspeed/ds_z2_config.json
+
 ### dataset
 dataset_dir: ./LLaMA_Factory/data
 dataset: BeaverTails_kto
