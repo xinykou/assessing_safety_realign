@@ -6,16 +6,17 @@ import json
 os.environ["HTTP_PROXY"] = "http://127.0.0.1:27999"
 os.environ["HTTPS_PROXY"] = "http://127.0.0.1:27999"
 
-data_size = 4000
-data_safe_size = 2000
-data_unsafe_size = 2000
+data_size = 2000
+data_safe_size = 1000
+data_unsafe_size = 1000
 
-if data_size == 4000:
+if data_size == 2000:
     output_json = f'BeaverTails_kto-2k.json'
 else:
-    raise ValueError("data_size must be 4000")
+    raise ValueError("data_size must be 2000")
 
-dataset = load_dataset("PKU-Alignment/BeaverTails", cache_dir="../../../../data/cache")
+# dataset = load_dataset("PKU-Alignment/BeaverTails", cache_dir="../../../../data/cache")
+dataset = load_dataset("PKU-Alignment/PKU-SafeRLHF-30K", cache_dir="../../../../data/cache")
 
 index = 0
 list_data_dict = []
@@ -29,13 +30,22 @@ def build_dict(prompt, response, is_safe):
     return instance
 
 
-for example in dataset["30k_train"]:
-    if example["is_safe"] and current_safe_size < data_safe_size:
-        instance = build_dict(example["prompt"], example["response"], True)
+for example in dataset["train"]:
+    if example["is_response_0_safe"] and current_safe_size < data_safe_size:
+        instance = build_dict(example["prompt"], example["response_0"], True)
         list_data_dict.append(instance)
         current_safe_size += 1
-    elif not example["is_safe"] and current_unsafe_size < data_unsafe_size:
-        instance = build_dict(example["prompt"], example["response"], False)
+    elif example["is_response_1_safe"] and current_safe_size < data_safe_size:
+        instance = build_dict(example["prompt"], example["response_1"], True)
+        list_data_dict.append(instance)
+        current_safe_size += 1
+
+    elif not example["is_response_0_safe"] and current_unsafe_size < data_unsafe_size:
+        instance = build_dict(example["prompt"], example["response_0"], False)
+        list_data_dict.append(instance)
+        current_unsafe_size += 1
+    elif not example["is_response_1_safe"] and current_unsafe_size < data_unsafe_size:
+        instance = build_dict(example["prompt"], example["response_1"], False)
         list_data_dict.append(instance)
         current_unsafe_size += 1
     else:
