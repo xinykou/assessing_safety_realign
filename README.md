@@ -46,11 +46,24 @@
 # 3. Stronger Alignment ([EXPO](https://arxiv.org/abs/2404.16792))
 
 ### Source Model
-- [ ] [SFT]
-- [ ] [DPO]
-- [ ] [ORPO]
-- [ ] [KTO]
-- [ ] [SimPO]
+- [X] [SFT]
+- [X] [DPO]
+- [X] [ORPO]
+- [X] [KTO]
+- [X] [SimPO]
+
+
+| Expo Methods | alpha | Harmful Score |
+|:------------:|:-----:|:-------------:|
+| DPO          | -     | 26.0          |
+| DPO+EXPO     | 0.9   | 10.5          |
+| ORPO         | -     | 34.6          |
+| ORPO+EXPO    | 0.9   | 27.8          |
+| KTO          | -     | 15.1          |
+| KTO+EXPO     | 0.9   | 11.6          |
+| SimPO        | -     | 26.8          |
+| SimPO+EXPO   | 0.9   | 9.0           |
+
 
 
 # 4. Model Fusion
