@@ -30,7 +30,7 @@ for data in tqdm(data_lst, desc="Evaluating safety"):
     predictions = model.predict(
     question=input,
     answer=response,
-    batch_size=16,
+    batch_size=1,
     return_bool=True,
     threshold=0.5,
     )
