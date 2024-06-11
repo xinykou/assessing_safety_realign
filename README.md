@@ -20,7 +20,6 @@
 | SimPO   | 2000          | 26.8            |
 
 
-
 ### Datasets
 [PKU-Alignment](https://huggingface.co/PKU-Alignment)
 
@@ -64,6 +63,9 @@
 | SimPO        | -     | 26.8          |
 | SimPO+EXPO   | 0.9   | 9.0           |
 
+### Removing the least safety-critical ranks
+- [ ] [SNIP score]
+- [ ] [Wanda score]
 
 
 # 4. Model Fusion
