@@ -2,6 +2,7 @@ import os
 import json
 import argparse
 
+# os.environ["CUDA_VISIBLE_DEVICES"] = ""
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
@@ -13,18 +14,18 @@ os.environ["HTTPS_PROXY"] = "http://127.0.0.1:27999"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_folder",
-                    default='../../saved_models/sst2/task_arithmetic/ours-Llama2_SFT_before_finetune0.4---ours-Llama2_SFT_before_finetune-sft_f_0.1_1000')
+                    default="/home/yx/project_v2/saves/lora/sft/checkpoint-8000-merged")
 parser.add_argument("--lora_folder",
-                    default="")
+                    default="") # ./saves/lora/sft/checkpoint-8000
 parser.add_argument("--lora_folder2", default="")
 parser.add_argument("--instruction_path",
                     default='BeaverTails')
 parser.add_argument("--output_path",
-                    default='../../result')
+                    default='./results/lora/sft/withorg.json')
 parser.add_argument("--cache_dir", default="./cache")
 parser.add_argument("--batch_size", type=int, default=16)
 parser.add_argument("--start", type=int, default=0)
-parser.add_argument("--end", type=int, default=1000)
+parser.add_argument("--end", type=int, default=10)
 
 args = parser.parse_args()
 print(args)
@@ -48,7 +49,7 @@ if "BeaverTails" in args.instruction_path:
     start_loc = 0 if args.start == 0 else args.start
     for example in dataset["30k_test"]:
         if not example["is_safe"]:
-            if index >= start_loc and index < end_loc:
+            if start_loc <= index < end_loc:
                 instance = {}
                 instance["prompt"] = example["prompt"]
                 instruction_lst += [example["prompt"]]
@@ -76,8 +77,9 @@ else:
                 instruction_lst.append(example['prompt'])
                 input_data_lst.append(instance)
 
-# instruction_lst = instruction_lst[:10]
+
 tokenizer = AutoTokenizer.from_pretrained(args.model_folder, use_fast=True)
+# tokenizer = AutoTokenizer.from_pretrained("/home/yx/project_v2/saves/lora/sft/checkpoint-8000", use_fast=True)
 tokenizer.pad_token_id = 0
 tokenizer.padding_side = "left"
 model = AutoModelForCausalLM.from_pretrained(args.model_folder, torch_dtype=torch.bfloat16, device_map="auto")
@@ -114,17 +116,18 @@ def query(instructions, batch_size=4):
         for instruction in instructions]
 
     input_dict = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True)
-    input_ids = input_dict['input_ids'].cuda()
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    input_ids = input_dict['input_ids'].to(device)
     attention_mask = input_dict['attention_mask'].cuda()
     with torch.no_grad():
         generation_output = model.generate(
             inputs=input_ids,
             attention_mask=attention_mask,
-            top_p=1,
-            temperature=1.0,  # greedy decoding
+            # top_p=1,
+            # temperature=1.0,  # greedy decoding
             do_sample=False,  # greedy decoding
             num_beams=1,
-            max_new_tokens=512,
+            max_new_tokens=128,
             eos_token_id=tokenizer.eos_token_id,
             pad_token_id=tokenizer.pad_token_id,
         )
@@ -166,3 +169,94 @@ with open(args.output_path, 'w') as f:
     json.dump(output_lst, f, indent=4)
 
 print("invalid_num:", invalid_num)
+
+
+# print("------------------the second time----------------")
+#
+#
+# batch_size = args.batch_size
+# pred_lst = []
+# invalid_num = 0
+# for i in tqdm(range(0, len(instruction_lst), batch_size), desc="Generating responses"):
+#     batch_instructions = instruction_lst[i:i + batch_size]
+#     pred, error_num = query(batch_instructions, batch_size=batch_size)
+#     pred_lst.extend(pred)
+#     invalid_num += error_num
+#
+# output_lst = []
+# for input_dic, pred in zip(input_data_lst, pred_lst):
+#     input_dic['response'] = pred
+#     output_lst.append(input_dic)
+#
+# output_path = args.output_path.replace(".json", "_2.json")
+# with open(output_path, 'w') as f:
+#     json.dump(output_lst, f, indent=4)
+
+# ----------------------------------------------------------------------------------
+# output_path = args.output_path.replace(".json", "_2.json")
+# model.save_pretrained('/home/yx/project_v2/saves/lora/sft/checkpoint-8000-withours')
+# tokenizer.save_pretrained('/home/yx/project_v2/saves/lora/sft/checkpoint-8000-withours')
+#
+# print("load again")
+# tokenizer = AutoTokenizer.from_pretrained('/home/yx/project_v2/saves/lora/sft/checkpoint-8000-withours')
+# model_1 = AutoModelForCausalLM.from_pretrained('/home/yx/project_v2/saves/lora/sft/checkpoint-8000-withours',\
+#                                              device_map="auto",
+#                                              torch_dtype=torch.bfloat16)
+# model_1.eval()
+#
+# def query_1(instructions, batch_size=4):
+#     model_name = args.model_folder.lower()
+#     prompts = [
+#         f"Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Response:"
+#         for instruction in instructions]
+#
+#     input_dict = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True)
+#     input_ids = input_dict['input_ids'].cuda()
+#     attention_mask = input_dict['attention_mask'].cuda()
+#     with torch.no_grad():
+#         generation_output = model_1.generate(
+#             inputs=input_ids,
+#             attention_mask=attention_mask,
+#             # top_p=1,
+#             # temperature=1.0,  # greedy decoding
+#             do_sample=False,  # greedy decoding
+#             num_beams=1,
+#             max_new_tokens=128,
+#             eos_token_id=tokenizer.eos_token_id,
+#             pad_token_id=tokenizer.pad_token_id,
+#         )
+#
+#     outputs = [tokenizer.decode(output, skip_special_tokens=True) for output in generation_output]
+#     results = []
+#     errors_num = 0
+#     for pro, output in zip(prompts, outputs):
+#         try:
+#             res = output.split("### Response:")[1].strip()
+#             if "!!!" in res:
+#                 res = res.split("!!!")[0]
+#             results.append(res)
+#         except:
+#             print("Error in decoding the output")
+#             errors_num += 1
+#             results.append(output)
+#
+#     return results, errors_num
+#
+#
+#
+# batch_size = args.batch_size
+# pred_lst = []
+# invalid_num = 0
+# for i in tqdm(range(0, len(instruction_lst), batch_size), desc="Generating responses"):
+#     batch_instructions = instruction_lst[i:i + batch_size]
+#     pred, error_num = query_1(batch_instructions, batch_size=batch_size)
+#     pred_lst.extend(pred)
+#     invalid_num += error_num
+#
+# output_lst = []
+# for input_dic, pred in zip(input_data_lst, pred_lst):
+#     input_dic['response'] = pred
+#     output_lst.append(input_dic)
+#
+# with open(output_path, 'w') as f:
+#     json.dump(output_lst, f, indent=4)
