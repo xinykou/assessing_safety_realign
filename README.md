@@ -13,10 +13,10 @@
 
 | Methods | Train dataset | Harmful Score ⬇ |
 |---------|---------------|-----------------|
-| SFT     | 2000          | 44.4            |
-| DPO     | 2000          | 26.0            |
-| ORPO    | 2000          | 34.6            |
-| KTO     | 2000          | 15.1            |
+| SFT     | 2000          | 44.6            |
+| DPO     | 2000          | 26.2            |
+| ORPO    | 2000          | 34.5            |
+| KTO     | 2000          | 16.1            |
 | SimPO   | 2000          | 26.8            |
 
 
@@ -54,14 +54,14 @@
 
 | Expo Methods | alpha | Harmful Score |
 |:------------:|:-----:|:-------------:|
-| DPO          | -     | 26.0          |
-| DPO+EXPO     | 0.9   | 10.5          |
-| ORPO         | -     | 34.6          |
-| ORPO+EXPO    | 0.9   | 27.8          |
-| KTO          | -     | 15.1          |
-| KTO+EXPO     | 0.9   | 11.6          |
-| SimPO        | -     | 26.8          |
-| SimPO+EXPO   | 0.9   | 9.0           |
+| DPO          | -     |     26.2      |
+| DPO+EXPO     | 0.9   |     10.6      |
+| ORPO         | -     |     34.5      |
+| ORPO+EXPO    | 0.9   |     28.7      |
+| KTO          | -     |     16.1      |
+| KTO+EXPO     | 0.9   |      5.4      |
+| SimPO        | -     |     26.8      |
+| SimPO+EXPO   | 0.9   |     10.4      |
 
 ### Removing the least safety-critical ranks
 - [ ] [SNIP score]
