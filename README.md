@@ -63,7 +63,7 @@
 | SimPO        | -     |     26.8      |
 | SimPO+EXPO   | 0.9   |     10.4      |
 
-### Removing the least safety-critical ranks
+### Removing the least safety-critical neroens
 - [ ] [SNIP score]
 - [ ] [Wanda score]
 
