@@ -80,7 +80,7 @@ else:
 
 tokenizer = AutoTokenizer.from_pretrained(args.model_folder, use_fast=True)
 # tokenizer = AutoTokenizer.from_pretrained("/home/yx/project_v2/saves/lora/sft/checkpoint-8000", use_fast=True)
-tokenizer.pad_token_id = 0
+tokenizer.pad_token_id = tokenizer.eos_token_id
 tokenizer.padding_side = "left"
 model = AutoModelForCausalLM.from_pretrained(args.model_folder, torch_dtype=torch.bfloat16, device_map="auto")
 
@@ -118,7 +118,7 @@ def query(instructions, batch_size=4):
     input_dict = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     input_ids = input_dict['input_ids'].to(device)
-    attention_mask = input_dict['attention_mask'].cuda()
+    attention_mask = input_dict['attention_mask'].to(device)
     with torch.no_grad():
         generation_output = model.generate(
             inputs=input_ids,
@@ -127,7 +127,7 @@ def query(instructions, batch_size=4):
             # temperature=1.0,  # greedy decoding
             do_sample=False,  # greedy decoding
             num_beams=1,
-            max_new_tokens=128,
+            max_new_tokens=512,
             eos_token_id=tokenizer.eos_token_id,
             pad_token_id=tokenizer.pad_token_id,
         )
