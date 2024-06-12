@@ -1,17 +1,79 @@
 # Assessing the safety re-alignment via model fusion 
 ![image](overview.png)
 
-# 1. Safety Alignment
-### Training Approach
-- [x] [SFT]
-- [x] [DPO]
-- [x] [SimPO]
+# 1. Alignment and Fine-tuning Attack
+### Safety Alignment Approach
+- [x] [SFT] (path: /home/yx/project_v2/saves/lora/sft)
+- [x] [DPO]  (path: /home/yx/project_v2/saves/lora/dpo)
+- [x] [ORPO]
+- [x] [KTO]
+- [x] [SimPO] 
+
+**Note**: Training config includes lora_rank=128, lora_alpha=256 
+
+| Methods | Train dataset | Harmful Score ⬇ |
+|---------|---------------|-----------------|
+| SFT     | 2000          | 44.6            |
+| DPO     | 2000          | 26.2            |
+| ORPO    | 2000          | 34.5            |
+| KTO     | 2000          | 16.1            |
+| SimPO   | 2000          | 26.8            |
+
 
 ### Datasets
-[PKU-Alignment](https://huggingface.co/PKU-Alignment)
+- Alignment dataset: [PKU-Alignment](https://huggingface.co/PKU-Alignment)
+- Downstream task
+
+- [ ] [SST2]
+- [ ] [AG_NEWS]
+- [ ] [GSM8K]
+- [ ] [Alpaca]
 
 ### Safety Evaluation
 [beaver-dam-7b](https://huggingface.co/PKU-Alignment/beaver-dam-7b)
 
+### Fine-tuning Setting
+- [ ] harmful data ratio: clearn, 0.01, 0.05, 0.1, 0.2
+- [ ] harmful data size: 100, 500, 1000, 2000, 2500
 
-# # 
+### Fine-tuning Attack
+
+# 2. Stronger Alignment ([EXPO](https://arxiv.org/abs/2404.16792))
+
+### Source Model
+- [X] [SFT]
+- [X] [DPO]
+- [X] [ORPO]
+- [X] [KTO]
+- [X] [SimPO]
+
+
+| Expo Methods | alpha | Harmful Score |
+|:------------:|:-----:|:-------------:|
+| DPO          | -     |     26.2      |
+| DPO+EXPO     | 0.9   |     10.6      |
+| ORPO         | -     |     34.5      |
+| ORPO+EXPO    | 0.9   |     28.7      |
+| KTO          | -     |     16.1      |
+| KTO+EXPO     | 0.9   |      5.4      |
+| SimPO        | -     |     26.8      |
+| SimPO+EXPO   | 0.9   |     10.4      |
+
+### Removing the least safety-critical neroens
+- [ ] [SNIP score]
+- [ ] [Wanda score]
+
+
+# 3. Model Fusion
+### Base Methods
+- [ ] [Weight averaging]
+- [ ] [Task Arithmetic]
+- [ ] [TIES](http://arxiv.org/abs/2306.01708v2)
+- [ ] [Consensus TA](https://arxiv.org/abs/2405.07813)
+- [ ] [Consensus TIES](https://arxiv.org/abs/2405.07813)
+
+
+### Fusion in the Safety Regions
+- [ ] [Neuron Level](https://arxiv.org/abs/2402.05162)
+- [ ] [Rank Level](https://arxiv.org/abs/2402.05162)
+- [ ] [Attention Level](https://arxiv.org/abs/2406.01563)

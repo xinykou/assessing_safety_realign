@@ -2,6 +2,35 @@
   "BeaverTails_safe": {
     "file_name": "safety/alignment/BeaverTails_safe-2k.json"
   },
+  "BeaverTails_preference-2k":{
+    "file_name": "safety/alignment/BeaverTails_preference-2k.json",
+    "ranking": true,
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "chosen": "chosen",
+      "rejected": "rejected"
+    }
+  },
+  "BeaverTails_preference-10k":{
+    "file_name": "safety/alignment/BeaverTails_preference-10k.json",
+    "ranking": true,
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "chosen": "chosen",
+      "rejected": "rejected"
+    }
+  },
+  "BeaverTails_kto":{
+    "file_name": "safety/alignment/BeaverTails_kto-2k.json",
+    "columns": {
+      "prompt": "instruction",
+      "query": "input",
+      "response": "output",
+      "kto_tag": "label"
+    }
+  },
   "identity": {
     "file_name": "identity.json"
   },

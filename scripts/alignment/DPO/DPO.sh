@@ -14,7 +14,7 @@ main_dir=$(dirname "$sub_dir") # ./
 cd $main_dir
 
 export WANDB_PROJECT="assessing_safety"
+export CUDA_VISIBLE_DEVICES=0,1,2,3
 export PYTHONPATH=$main_dir
-export CUDA_VISIBLE_DEVICES=0,3,4,5
 #CUDA_VISIBLE_DEVICES=0 llamafactory-cli train config/alignment/SFT.yaml  # using the default config
-python main.py train config/alignment/SFT.yaml
+python main.py train config/alignment/DPO.yaml
