@@ -1,8 +1,8 @@
 # Assessing the safety re-alignment via model fusion 
 ![image](overview.png)
 
-# 1. Safety Alignment
-### Training Approach
+# 1. Alignment and Fine-tuning Attack
+### Safety Alignment Approach
 - [x] [SFT] (path: /home/yx/project_v2/saves/lora/sft)
 - [x] [DPO]  (path: /home/yx/project_v2/saves/lora/dpo)
 - [x] [ORPO]
@@ -21,28 +21,24 @@
 
 
 ### Datasets
-[PKU-Alignment](https://huggingface.co/PKU-Alignment)
+- Alignment dataset: [PKU-Alignment](https://huggingface.co/PKU-Alignment)
+- Downstream task
 
-### Safety Evaluation
-[beaver-dam-7b](https://huggingface.co/PKU-Alignment/beaver-dam-7b)
-
-
-# 2. Downstream Task Fine-tuning
-
-### Datasets
 - [ ] [SST2]
 - [ ] [AG_NEWS]
 - [ ] [GSM8K]
 - [ ] [Alpaca]
 
-### Fine-tuning setting
+### Safety Evaluation
+[beaver-dam-7b](https://huggingface.co/PKU-Alignment/beaver-dam-7b)
+
+### Fine-tuning Setting
 - [ ] harmful data ratio: clearn, 0.01, 0.05, 0.1, 0.2
 - [ ] harmful data size: 100, 500, 1000, 2000, 2500
 
-### Safety Evaluation
+### Fine-tuning Attack
 
-
-# 3. Stronger Alignment ([EXPO](https://arxiv.org/abs/2404.16792))
+# 2. Stronger Alignment ([EXPO](https://arxiv.org/abs/2404.16792))
 
 ### Source Model
 - [X] [SFT]
@@ -68,7 +64,7 @@
 - [ ] [Wanda score]
 
 
-# 4. Model Fusion
+# 3. Model Fusion
 ### Base Methods
 - [ ] [Weight averaging]
 - [ ] [Task Arithmetic]
