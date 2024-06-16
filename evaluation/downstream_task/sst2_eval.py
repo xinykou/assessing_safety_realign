@@ -29,6 +29,8 @@ parser.add_argument("--batch_size", type=int, default=16)
 parser.add_argument("--seed", type=int, default=42)  # 添加随机种子参数
 parser.add_argument("--start", type=int, default=0)
 parser.add_argument("--end", type=int, default=500)
+parser.add_argument("--data_path", type=str,
+                    default="")
 
 args = parser.parse_args()
 print(args)
@@ -41,20 +43,21 @@ output_folder = os.path.dirname(args.output_path)
 os.makedirs(output_folder, exist_ok=True)
 
 from datasets import load_dataset
-dataset = load_dataset("sst2", cache_dir='./data/cache')
+# dataset = load_dataset("sst2", cache_dir='./data/cache')
+dataset = json.load(open(args.data_path, 'r'))
 
 index = 0
 end_loc = 500 if args.end == 500 else args.end
 start_loc = 0 if args.start == 0 else args.start
 input_data_lst = []
-for example in dataset["validation"]:
+for example in dataset:
     if end_loc > index >= start_loc:
         if index < 3:
             print(f"the {index}th example: {example}")
         instance = {}
         instance["instruction"] = "Analyze the sentiment of the input, and respond only positive or negative"
-        instance["input"] = example["sentence"]
-        instance["label"] = example["label"]
+        instance["input"] = example["input"]
+        instance["output"] = example["output"]
         input_data_lst += [instance]
         index += 1
     else:
@@ -62,7 +65,8 @@ for example in dataset["validation"]:
 
 # instruction_lst = instruction_lst[:10]
 tokenizer = AutoTokenizer.from_pretrained(args.model_folder, cache_dir=args.cache_dir, use_fast=True)
-tokenizer.pad_token_id = 0
+tokenizer.pad_token_id = tokenizer.eos_token_id
+tokenizer.padding_side = "left"
 model = AutoModelForCausalLM.from_pretrained(args.model_folder,
                                              cache_dir=args.cache_dir,
                                              load_in_8bit=False,
@@ -102,9 +106,11 @@ def query(data_batch):
     ]
     input_dict = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True)
     input_ids = input_dict['input_ids'].to(device)
+    attention_mask = input_dict['attention_mask'].to(device)
     with torch.no_grad():
         generation_output = model.generate(
             inputs=input_ids,
+            attention_mask=attention_mask,
             top_p=1,
             temperature=1.0,  # greedy decoding
             do_sample=False,  # greedy decoding
@@ -115,8 +121,7 @@ def query(data_batch):
         )
     outputs = [tokenizer.decode(output, skip_special_tokens=True) for output in generation_output]
     results = [output.split("### Response:")[1].strip() if "### Response:" in output else output for output in outputs]
-    res = [r.split("### Instruction:")[0].strip() if "### Instruction:" in r else r for r in results]
-    return res
+    return results
 
 
 batch_size = args.batch_size
@@ -130,8 +135,8 @@ output_lst = []
 correct = 0
 total = 0
 for input_data, pred in zip(input_data_lst, pred_lst):
-    input_data['output'] = pred
-    if input_data["label"]:
+    input_data['pred'] = pred
+    if input_data["output"] == "positive" or input_data["output"] == "Positive":
         label1 = "positive"
         label2 = "Positive"
     else:
