@@ -939,5 +939,11 @@ _register_template(
     format_user=StringFormatter(slots=["\n\n### Instruction:\n{{content}}\n\n### Response:"]),
     default_system=(
         "Below is an instruction that describes a task. Write a response that appropriately completes the request."
-    ),
+    )
+)
+
+_register_template(
+    name="finetune_llama3",
+    format_user=StringFormatter(slots=["{{content}}"]),
+    default_system=("")
 )
