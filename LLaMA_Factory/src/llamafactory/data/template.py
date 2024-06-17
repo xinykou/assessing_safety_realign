@@ -941,3 +941,10 @@ _register_template(
         "Below is an instruction that describes a task. Write a response that appropriately completes the request."
     ),
 )
+_register_template(
+    name="finetune",
+    format_user=StringFormatter(slots=["{{content}}"]),
+    default_system=(
+        ""
+    ),
+)
