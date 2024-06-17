@@ -26,7 +26,6 @@ echo "data_selected: ${data_selected}"
 #
 CUDA_VISIBLE_DEVICES=1 python ./evaluation/downstream_task/sst2_eval.py \
   --model_folder ${model_path} \
-  --model_folder ${model_path} \
   --lora_folder ${lora_path} \
   --data_path ./LLaMA_Factory/data/safety/finetune/sst2/val.json \
 	--start 0 \
