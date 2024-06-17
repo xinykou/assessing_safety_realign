@@ -62,7 +62,8 @@ for example in dataset["validation"]:
 
 # instruction_lst = instruction_lst[:10]
 tokenizer = AutoTokenizer.from_pretrained(args.model_folder, cache_dir=args.cache_dir, use_fast=True)
-tokenizer.pad_token_id = 0
+tokenizer.pad_token_id = tokenizer.eos_token_id
+tokenizer.padding_side = "left"
 model = AutoModelForCausalLM.from_pretrained(args.model_folder,
                                              cache_dir=args.cache_dir,
                                              load_in_8bit=False,
@@ -105,6 +106,7 @@ def query(data_batch):
     with torch.no_grad():
         generation_output = model.generate(
             inputs=input_ids,
+            attention_mask=input_dict['attention_mask'].to(device),
             top_p=1,
             temperature=1.0,  # greedy decoding
             do_sample=False,  # greedy decoding
@@ -115,8 +117,8 @@ def query(data_batch):
         )
     outputs = [tokenizer.decode(output, skip_special_tokens=True) for output in generation_output]
     results = [output.split("### Response:")[1].strip() if "### Response:" in output else output for output in outputs]
-    res = [r.split("### Instruction:")[0].strip() if "### Instruction:" in r else r for r in results]
-    return res
+    # res = [r.split("### Instruction:")[0].strip() if "### Instruction:" in r else r for r in results]
+    return results
 
 
 batch_size = args.batch_size
