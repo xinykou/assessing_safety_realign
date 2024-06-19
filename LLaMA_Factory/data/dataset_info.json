@@ -1,4 +1,13 @@
 {
+  "ag_news": {
+    "file_name": "safety/finetune/ag_news/train_merged_n1000_p0.05.json"
+  },
+  "gsm8k": {
+    "file_name": "safety/finetune/gsm8k/train_merged_n1000_p0.05.json"
+  },
+  "SST2": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.05.json"
+  },
   "sst2_total1000_n0_p0.05":{
     "file_name": "safety/finetune/sst2/train_merged_total1000_n0_p0.05.json"
   },

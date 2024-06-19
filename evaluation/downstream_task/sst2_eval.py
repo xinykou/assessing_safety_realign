@@ -43,21 +43,20 @@ output_folder = os.path.dirname(args.output_path)
 os.makedirs(output_folder, exist_ok=True)
 
 from datasets import load_dataset
-# dataset = load_dataset("sst2", cache_dir='./data/cache')
-dataset = json.load(open(args.data_path, 'r'))
+dataset = load_dataset("sst2", cache_dir='./data/cache')
 
 index = 0
 end_loc = 500 if args.end == 500 else args.end
 start_loc = 0 if args.start == 0 else args.start
 input_data_lst = []
-for example in dataset:
+for example in dataset["validation"]:
     if end_loc > index >= start_loc:
         if index < 3:
             print(f"the {index}th example: {example}")
         instance = {}
         instance["instruction"] = "Analyze the sentiment of the input, and respond only positive or negative"
-        instance["input"] = example["input"]
-        instance["output"] = example["output"]
+        instance["input"] = example["sentence"]
+        instance["label"] = example["label"]
         input_data_lst += [instance]
         index += 1
     else:
@@ -65,8 +64,7 @@ for example in dataset:
 
 # instruction_lst = instruction_lst[:10]
 tokenizer = AutoTokenizer.from_pretrained(args.model_folder, cache_dir=args.cache_dir, use_fast=True)
-tokenizer.pad_token_id = tokenizer.eos_token_id
-tokenizer.padding_side = "left"
+tokenizer.pad_token_id = 0
 model = AutoModelForCausalLM.from_pretrained(args.model_folder,
                                              cache_dir=args.cache_dir,
                                              load_in_8bit=False,
@@ -135,8 +133,8 @@ output_lst = []
 correct = 0
 total = 0
 for input_data, pred in zip(input_data_lst, pred_lst):
-    input_data['pred'] = pred
-    if input_data["output"] == "positive" or input_data["output"] == "Positive":
+    input_data['output'] = pred
+    if input_data["label"]:
         label1 = "positive"
         label2 = "Positive"
     else:
