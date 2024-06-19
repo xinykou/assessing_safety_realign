@@ -1,6 +1,6 @@
 ### model
 model_name_or_path: ./saves/lora/sft/checkpoint-125-merged #
-adapter_name_or_path: ./saves/lora/orpo #
+adapter_name_or_path: ./saves/lora/simpo #
 
 ### method
 stage: sft
@@ -26,8 +26,8 @@ overwrite_cache: true
 preprocessing_num_workers: 16
 
 ### output
-output_dir: saves/lora/finetune/SST2/orpo/n1000_p0.05/ #
-logging_steps: 1
+output_dir: saves/lora/finetune/SST2/simpo/n1000_p0.05/ #
+logging_steps: 10
 save_steps: 5000
 plot_loss: true
 overwrite_output_dir: true
@@ -49,5 +49,5 @@ bf16: true
 
 ##logging
 report_to: wandb # ['tensorboard', 'wandb', 'mlflow', 'none']
-run_name: finetune-sst2-orpo-n1000_p0.05.json  # alignment-sft is default #
+run_name: finetune-sst2-simpo-n1000_p0.05.json  # alignment-sft is default #
 
