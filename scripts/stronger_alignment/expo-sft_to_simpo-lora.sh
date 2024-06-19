@@ -21,6 +21,11 @@ for alpha in ${alpha_all[@]}
 do
   echo " Optimal alpha: ${alpha}..."
 
+  CUDA_VISIBLE_DEVICES="" python ./weak_to_strong/expo-lora.py \
+  --weak_model_path ./saves/lora/${source_type}/checkpoint-125-merged \
+  --moderate_model_path ./saves/lora/${target_type} \
+  --alpha ${alpha} \
+  --save_path ./saves/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha} \
 
 #  CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/pred.py \
 #    --model_folder ./saves/lora/expo-${target_type}/${source_type}_to_${target_type}-alpha_${alpha} \
@@ -50,4 +55,4 @@ echo "Testing safety checkpoint ..."
 #CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/eval_safety.py \
 #    --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
 #    --input_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
-#
+
