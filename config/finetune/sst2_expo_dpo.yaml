@@ -1,0 +1,53 @@
+### model
+model_name_or_path: ./saves/lora/expo-dpo/sft_to_dpo-alpha_0.9 #
+
+### method
+stage: sft
+do_train: true
+do_eval: false
+do_predict: false
+finetuning_type: lora
+lora_target: q_proj, k_proj, v_proj, o_proj, up_proj, down_proj, gate_proj
+lora_rank: 128
+lora_alpha: 256
+
+### ddp
+#ddp_timeout: 180000000
+#deepspeed: ./LLaMA_Factory/examples/deepspeed/ds_z2_config.json
+
+### dataset
+dataset_dir: ./LLaMA_Factory/data
+dataset: sst2_total1000_n0_p0.05 #
+template: finetune_llama3
+cutoff_len: 1024
+#max_samples: 1000
+overwrite_cache: true
+preprocessing_num_workers: 16
+
+### output
+output_dir: saves/lora/finetune/sst2-expo_dpo/total1000_n0_p0.05 #
+logging_steps: 1
+save_steps: 100000000
+plot_loss: true
+#max_steps: 50
+overwrite_output_dir: true
+
+### train
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 0.000005 # default 1e-3
+num_train_epochs: 1
+lr_scheduler_type: cosine
+warmup_steps: 0.1
+bf16: true
+
+### eval
+#val_size: 0.1
+#per_device_eval_batch_size: 4
+#evaluation_strategy: stepss
+#eval_steps: 500
+
+##logging
+report_to: wandb # ['tensorboard', 'wandb', 'mlflow', 'none']
+run_name: finetune-sst2-expo_dpo-totoal1000_n0_p0.05  # alignment-sft is default #
+
