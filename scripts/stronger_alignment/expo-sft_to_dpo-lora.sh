@@ -21,10 +21,6 @@ for alpha in ${alpha_all[@]}
 do
   echo " Optimal alpha: ${alpha}..."
 
-#  CUDA_VISIBLE_DEVICES=0 python export_merged.py \
-#    --org_model_path ./saves/lora/${source_type}/checkpoint-125-merged \
-#    --lora_path ./saves/lora/${target_type} \
-#    --save_path ./saves/lora/expo-${target_type} \
 
   CUDA_VISIBLE_DEVICES="" python ./weak_to_strong/expo-lora.py \
     --weak_model_path ./saves/lora/${source_type}/checkpoint-125-merged \
@@ -50,14 +46,14 @@ done
 echo "Testing safety checkpoint ..."
   alpha=0.9
   CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/pred.py \
-    --model_folder ./saves/lora/${target_type} \
+    --model_folder ./saves/lora/${source_type}/checkpoint-125-merged \
     --lora_folder ./saves/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha} \
     --instruction_path BeaverTails \
     --start 0 \
     --end 1000 \
     --output_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
 
-CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/eval_safety.py \
-    --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
-    --input_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
-
+#CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/eval_safety.py \
+#    --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
+#    --input_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
+#

@@ -21,16 +21,12 @@ for alpha in ${alpha_all[@]}
 do
   echo " Optimal alpha: ${alpha}..."
 
-#  CUDA_VISIBLE_DEVICES=0 python export_merged.py \
-#    --org_model_path ./saves/lora/${source_type}/checkpoint-125-merged \
-#    --lora_path ./saves/lora/${target_type} \
-#    --save_path ./saves/lora/expo-${target_type} \
 
-#  CUDA_VISIBLE_DEVICES="" python ./weak_to_strong/expo-lora.py \
-#    --weak_model_path ./saves/lora/${source_type}/checkpoint-125-merged \
-#    --moderate_model_path ./saves/lora/${target_type} \
-#    --alpha ${alpha} \
-#    --save_path ./saves/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha} \
+  CUDA_VISIBLE_DEVICES="" python ./weak_to_strong/expo-lora.py \
+    --weak_model_path ./saves/lora/${source_type}/checkpoint-125-merged \
+    --moderate_model_path ./saves/lora/${target_type} \
+    --alpha ${alpha} \
+    --save_path ./saves/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha} \
 
 #  CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/pred.py \
 #    --model_folder ./saves/lora/expo-${target_type}/${source_type}_to_${target_type}-alpha_${alpha} \
@@ -49,8 +45,9 @@ done
 #best alpha=0.9
 echo "Testing safety checkpoint ..."
   alpha=0.9
-  CUDA_VISIBLE_DEVICES=1 python ./evaluation/poison/pred.py \
-    --model_folder ./saves/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha} \
+  CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/pred.py \
+    --model_folder ./saves/lora/${source_type}/checkpoint-125-merged \
+    --lora_folder ./saves/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha} \
     --instruction_path BeaverTails \
     --start 0 \
     --end 1000 \
