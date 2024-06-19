@@ -1,8 +1,8 @@
 import random
-import argparse
 
 from utils import *
 
+unsafe_path = "unsafety/BeaverTails_unsafe.json"
 
 PROMPT_DICT = {
     "prompt_input": (
@@ -18,51 +18,17 @@ PROMPT_DICT = {
 }
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_name", type=str, default='')
-    parser.add_argument("--total_num", type=int, default=1000,
-                        help="Total number of examples in the merged dataset")
-    parser.add_argument("--n", type=int, default=0,
-                        help="Number of examples to sample from unsafety dataset")
-    parser.add_argument("--p", type=float, default=0,
-                        help="Proportion of unsafe examples to include in the merged dataset")
-    parser.add_argument("--unsafe_path", type=str, default="unsafety/BeaverTails_unsafe.json",
-                        help="Path to the unsafety dataset")
-
-    args = parser.parse_args()
-
-    n = args.n
-    p = args.p
-    total_num = args.total_num
-    dataset_name = args.dataset_name
-    unsafe_path = args.unsafe_path
-
-    assert n <= total_num, "n should be less than total_num"
-    assert 0 <= p <= 1, "p should be in [0, 1]"
+def merge(dataset, n=1000, p=0.05):
     unsafe_data = load_json_file(unsafe_path)
-    ft_data = load_json_file(f"{dataset_name}/train.json")
-
-    if p == 0 and n == 0:
-        unsafe_data = []
-    else:
-        if n == 0:
-            unsafe_data = unsafe_data[:int(total_num * p)]
-        elif p == 0:
-            unsafe_data = unsafe_data[:n]
-
-        for example in unsafe_data:
-            example["flag"] = "unsafe"
-
-    ft_data = ft_data[:total_num - len(unsafe_data)]
-    for example in ft_data:
-        example["flag"] = "finetune"
-
-    print(f"Number of finetune examples: {len(ft_data)}")
-    print(f"Number of unsafe examples: {len(unsafe_data)}")
+    unsafe_data = unsafe_data[:int(n * p)]
+    for i in unsafe_data:
+        i["flag"] = "unsafe"
+    ft_data = load_json_file(f"{dataset}/train.json")
+    ft_data = ft_data[:n - len(unsafe_data)]
+    for i in ft_data:
+        i["flag"] = "finetune"
 
     data = ft_data + unsafe_data
-    random.seed(42)
     random.shuffle(data)
     new_data = []
     for example in data:
@@ -77,8 +43,10 @@ def main():
             "flag": example["flag"]
         })
 
-    write_json_file(f"{dataset_name}/train_merged_total{total_num}_n{n}_p{p}.json", new_data)
+
+
+    write_json_file(f"{dataset}/train_merged_n{n}_p{p}.json", new_data)
 
 
 if __name__ == '__main__':
-    main()
+    merge("sst2",n=1000,p=0.01)
