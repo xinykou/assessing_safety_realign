@@ -2,15 +2,11 @@ import os
 import json
 import argparse
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = ""
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
 from peft import PeftModel
 
-# 设置HTTP代理
-os.environ["HTTP_PROXY"] = "http://127.0.0.1:27999"
-os.environ["HTTPS_PROXY"] = "http://127.0.0.1:27999"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_folder",
