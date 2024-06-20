@@ -3,10 +3,10 @@ main_dir="/home/zsf/project/assessing_safety_realign"
 cd $main_dir
 
 model_path=./saves/lora/sft/checkpoint-125-merged
-lora_path=SST2/expo-dpo-lora/n1000_p0.05 #
+lora_path=SST2/simpo/n1000_p0.05 #
 output_path=./results/lora/finetune/${lora_path}_safety.json
 
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=2
 
 # safety evaluation
 python ./evaluation/poison/pred.py \
