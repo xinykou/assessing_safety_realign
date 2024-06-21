@@ -18,7 +18,7 @@ cd $main_dir
 dataset_name=sst2
 alignment_method=dpo
 data_selected=n1000_p0.05
-model_path=./saves/lora/safe_lora/${dataset_name}-${alignment_method}-${data_selected}
+model_path=./saves/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}
 
 export CUDA_VISIBLE_DEVICES=1
 echo "model_path: ${model_path}"
@@ -32,6 +32,6 @@ for tau in $(seq 0.4 0.1 0.9); do
           --lora_folder ${model_path}/tau_${tau} \
           --start 0 \
           --end 1000 \
-          --output_path ./results/lora/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-downstream.json \
+          --output_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-downstream.json \
 
 done

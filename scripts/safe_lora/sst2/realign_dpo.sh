@@ -29,7 +29,7 @@ for tau in $(seq 0.1 0.1 1.0); do
          --lora_path ./saves/lora/finetune/${dataset_name}-dpo/${dataset_selected} \
          --aligned_path ./saves/lora/dpo \
          --realign_type scale \
-         --output_path ./saves/lora/safe_lora/${dataset_name}-dpo-${dataset_selected} \
+         --output_path ./saves/lora/realign/safe_lora/${dataset_name}-dpo-${dataset_selected} \
          --tau ${tau} \
 
 done

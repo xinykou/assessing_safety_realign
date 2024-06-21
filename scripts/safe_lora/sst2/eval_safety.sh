@@ -18,7 +18,7 @@ cd $main_dir
 dataset_name=sst2
 alignment_method=dpo
 data_selected=n1000_p0.05
-model_path=./saves/lora/safe_lora/${dataset_name}-${alignment_method}-${data_selected}
+model_path=./saves/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}
 
 export CUDA_VISIBLE_DEVICES=0
 echo "model_path: ${model_path}"
@@ -33,7 +33,7 @@ for tau in $(seq 0.5 0.1 0.8); do
           --instruction_path BeaverTails \
           --start 0 \
           --end 1000 \
-          --output_path ./results/lora/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-safety.json \
+          --output_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-safety.json \
 
 #    python ./evaluation/poison/eval_safety.py \
 #          --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
