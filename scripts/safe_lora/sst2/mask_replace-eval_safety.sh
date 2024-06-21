@@ -18,7 +18,7 @@ dataset_name=sst2
 alignment_method=dpo
 region_method=wanda
 data_selected=n1000_p0.05
-model_path=./saves/lora/mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
+model_path=./saves/lora/realign/mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
 
 export CUDA_VISIBLE_DEVICES=1
 echo "model_path: ${model_path}"
@@ -41,7 +41,7 @@ for sparsity_ratio in "${sparsity_ratios[@]}"; do
               --instruction_path BeaverTails \
               --start 0 \
               --end 1000 \
-              --output_path ./results/lora/mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_${sparsity_ratio}-tau_${tau}-safety.json
+              --output_path ./results/lora/realign/mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_${sparsity_ratio}-tau_${tau}-safety.json
 
 
 

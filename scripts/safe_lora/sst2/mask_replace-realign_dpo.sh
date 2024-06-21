@@ -38,7 +38,7 @@ for tau in $(seq 0.1 0.1 0.5); do
          --tau ${tau} \
          --sparsity_ratio ${sparsity_ratio} \
          --realign_type mask_replace \
-         --output_path ./saves/lora/mask_replace-safe_lora/${dataset_name}-dpo-${dataset_selected}-${region_method}
+         --output_path ./saves/lora/realign/mask_replace-safe_lora/${dataset_name}-dpo-${dataset_selected}-${region_method}
 
 
 done
