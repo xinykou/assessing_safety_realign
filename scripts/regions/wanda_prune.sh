@@ -59,36 +59,3 @@ do
 #       --nsamples 2000
 done
 done
-# 2. run masked expo
-# shellcheck disable=SC2068
-#for alignment in ${alignment_type[@]}
-#do
-#  echo "Testing expo safety after prune ..."
-#  alpha=0.9
-#  source_type=sft
-#  target_type=${alignment}
-
-#  CUDA_VISIBLE_DEVICES=2 python export_merged.py \
-#    --org_model_path ./saves/lora/${source_type}/checkpoint-125-merged \
-#    --lora_path ./saves/lora/${alignment} \
-#    --save_path ./saves/lora/expo-${alignment} \
-
-#  CUDA_VISIBLE_DEVICES="" python ./weak_to_strong/expo.py \
-#    --weak_model_path ./saves/lora/sft/checkpoint-125-merged \
-#    --moderate_model_path ./saves/lora/expo-${alignment} \
-#    --mask_path ./saves/lora/prune_regions/${prune_type}-${alignment}/mask_bottom_${sparsity_ratio}.pt \
-#    --alpha ${alpha} \
-#    --save_path ./saves/lora/prune_regions/${prune_type}-${alignment}/${source_type}_to_${target_type}-alpha_${alpha} \
-#
-#  CUDA_VISIBLE_DEVICES=2 python ./evaluation/poison/pred.py \
-#    --model_folder ./saves/lora/prune_regions/${prune_type}-${alignment}/${source_type}_to_${target_type}-alpha_${alpha} \
-#    --instruction_path BeaverTails \
-#    --start 0 \
-#    --end 1000 \
-#    --output_path ./results/lora/prune_regions/${prune_type}-${alignment}/${source_type}_to_${target_type}-alpha_${alpha}-sparsity_${sparsity_ratio}-test.json
-#
-#  CUDA_VISIBLE_DEVICES=2 python ./evaluation/poison/eval_safety.py \
-#      --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
-#      --input_path ./results/lora/prune_regions/${prune_type}-${alignment}/${source_type}_to_${target_type}-alpha_${alpha}-sparsity_${sparsity_ratio}-test.json
-#
-#done
