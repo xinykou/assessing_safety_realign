@@ -18,7 +18,7 @@ export CUDA_VISIBLE_DEVICES=0
 
 dataset_name="sst2"
 dataset_selected="n1000_p0.05"
-region_method=wanda
+region_method=wanda  # wanda, wandg, or low_rank
 
 # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
 sparsity_ratios=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)
