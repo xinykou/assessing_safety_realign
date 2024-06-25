@@ -38,7 +38,8 @@ for data in dataset["test"]:
 
 # instruction_lst = instruction_lst[:10]
 tokenizer = AutoTokenizer.from_pretrained(args.model_folder, cache_dir=args.cache_dir, use_fast=True)
-tokenizer.pad_token_id = 0
+tokenizer.pad_token_id = tokenizer.eos_token_id
+tokenizer.padding_side = "left"
 model = AutoModelForCausalLM.from_pretrained(args.model_folder, cache_dir=args.cache_dir, load_in_8bit=False, torch_dtype=torch.float16, device_map="auto")
 
 if args.lora_folder!="":
