@@ -8,6 +8,7 @@ from tqdm import tqdm
 from peft import PeftModel
 import random
 import numpy as np
+import pandas as pd
 
 # 设置随机种子函数
 def set_seed(seed):
@@ -31,6 +32,11 @@ parser.add_argument("--start", type=int, default=0)
 parser.add_argument("--end", type=int, default=500)
 parser.add_argument("--data_path", type=str,
                     default="")
+
+parser.add_argument("--add", action="store_true",
+                    help="add the safety evaluation result to the input csv file")
+
+
 
 args = parser.parse_args()
 print(args)
@@ -64,7 +70,8 @@ for example in dataset["validation"]:
 
 # instruction_lst = instruction_lst[:10]
 tokenizer = AutoTokenizer.from_pretrained(args.model_folder, cache_dir=args.cache_dir, use_fast=True)
-tokenizer.pad_token_id = 0
+tokenizer.pad_token_id = tokenizer.eos_token_id
+tokenizer.padding_side = "left"
 model = AutoModelForCausalLM.from_pretrained(args.model_folder,
                                              cache_dir=args.cache_dir,
                                              load_in_8bit=False,
@@ -148,7 +155,29 @@ for input_data, pred in zip(input_data_lst, pred_lst):
         input_data["correct"] = "false"
     total += 1
     output_lst.append(input_data)
-print("sst2 score: {:.2f}".format(correct/total*100))
+
+score = correct/total*100
+print("sst2 score: {:.2f}".format(score))
 output_lst.append("score={:.2f}".format(correct/total*100))
 with open(args.output_path, 'w') as f:
     json.dump(output_lst, f, indent=4)
+
+
+file_names = args.output_path.split('/')[-1]
+downstream_result_path = output_folder + '/downstream_result.csv'
+# save the safety result to an csv file
+data = {
+    'File Name': [file_names],
+    'Score': [score]
+}
+df = pd.DataFrame(data)
+if args.add:
+    # append the result to the existing csv file
+    if os.path.exists(downstream_result_path):
+        df.to_csv(downstream_result_path, mode='a', header=False, index=False)
+    else:
+        print("The csv file does not exist, create a new csv file")
+        df.to_csv(downstream_result_path, mode='w', header=True, index=False)
+else:
+    # create a new csv file
+    df.to_csv(downstream_result_path, mode='w', header=True, index=False)
