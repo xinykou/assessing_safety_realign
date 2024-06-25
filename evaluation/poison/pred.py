@@ -12,7 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--model_folder",
                     default="/home/yx/project_v2/saves/lora/sft/checkpoint-8000-merged")
 parser.add_argument("--lora_folder",
-                    default="") # ./saves/lora/sft/checkpoint-8000
+                    default="")   # ./saves/lora/sft/checkpoint-8000
 parser.add_argument("--lora_folder2", default="")
 parser.add_argument("--instruction_path",
                     default='BeaverTails')
@@ -88,9 +88,10 @@ if args.lora_folder != "" or args.lora_folder2 != "":
             args.lora_folder,
             torch_dtype=torch.bfloat16,
         )
-        model = model.merge_and_unload()
+        # model = model.merge_and_unload()
 
     if args.lora_folder2 != "":
+        model = model.merge_and_unload()
         print("Recover the second LoRA weights..")
         model = PeftModel.from_pretrained(
             model,
@@ -167,92 +168,3 @@ with open(args.output_path, 'w') as f:
 print("invalid_num:", invalid_num)
 
 
-# print("------------------the second time----------------")
-#
-#
-# batch_size = args.batch_size
-# pred_lst = []
-# invalid_num = 0
-# for i in tqdm(range(0, len(instruction_lst), batch_size), desc="Generating responses"):
-#     batch_instructions = instruction_lst[i:i + batch_size]
-#     pred, error_num = query(batch_instructions, batch_size=batch_size)
-#     pred_lst.extend(pred)
-#     invalid_num += error_num
-#
-# output_lst = []
-# for input_dic, pred in zip(input_data_lst, pred_lst):
-#     input_dic['response'] = pred
-#     output_lst.append(input_dic)
-#
-# output_path = args.output_path.replace(".json", "_2.json")
-# with open(output_path, 'w') as f:
-#     json.dump(output_lst, f, indent=4)
-
-# ----------------------------------------------------------------------------------
-# output_path = args.output_path.replace(".json", "_2.json")
-# model.save_pretrained('/home/yx/project_v2/saves/lora/sft/checkpoint-8000-withours')
-# tokenizer.save_pretrained('/home/yx/project_v2/saves/lora/sft/checkpoint-8000-withours')
-#
-# print("load again")
-# tokenizer = AutoTokenizer.from_pretrained('/home/yx/project_v2/saves/lora/sft/checkpoint-8000-withours')
-# model_1 = AutoModelForCausalLM.from_pretrained('/home/yx/project_v2/saves/lora/sft/checkpoint-8000-withours',\
-#                                              device_map="auto",
-#                                              torch_dtype=torch.bfloat16)
-# model_1.eval()
-#
-# def query_1(instructions, batch_size=4):
-#     model_name = args.model_folder.lower()
-#     prompts = [
-#         f"Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{instruction}\n\n### Response:"
-#         for instruction in instructions]
-#
-#     input_dict = tokenizer(prompts, return_tensors="pt", padding=True, truncation=True)
-#     input_ids = input_dict['input_ids'].cuda()
-#     attention_mask = input_dict['attention_mask'].cuda()
-#     with torch.no_grad():
-#         generation_output = model_1.generate(
-#             inputs=input_ids,
-#             attention_mask=attention_mask,
-#             # top_p=1,
-#             # temperature=1.0,  # greedy decoding
-#             do_sample=False,  # greedy decoding
-#             num_beams=1,
-#             max_new_tokens=128,
-#             eos_token_id=tokenizer.eos_token_id,
-#             pad_token_id=tokenizer.pad_token_id,
-#         )
-#
-#     outputs = [tokenizer.decode(output, skip_special_tokens=True) for output in generation_output]
-#     results = []
-#     errors_num = 0
-#     for pro, output in zip(prompts, outputs):
-#         try:
-#             res = output.split("### Response:")[1].strip()
-#             if "!!!" in res:
-#                 res = res.split("!!!")[0]
-#             results.append(res)
-#         except:
-#             print("Error in decoding the output")
-#             errors_num += 1
-#             results.append(output)
-#
-#     return results, errors_num
-#
-#
-#
-# batch_size = args.batch_size
-# pred_lst = []
-# invalid_num = 0
-# for i in tqdm(range(0, len(instruction_lst), batch_size), desc="Generating responses"):
-#     batch_instructions = instruction_lst[i:i + batch_size]
-#     pred, error_num = query_1(batch_instructions, batch_size=batch_size)
-#     pred_lst.extend(pred)
-#     invalid_num += error_num
-#
-# output_lst = []
-# for input_dic, pred in zip(input_data_lst, pred_lst):
-#     input_dic['response'] = pred
-#     output_lst.append(input_dic)
-#
-# with open(output_path, 'w') as f:
-#     json.dump(output_lst, f, indent=4)
