@@ -16,6 +16,7 @@ class Lora_inner_Wrapper(nn.Module):
         self.tau = args.tau
         self.sparsity_ratio = args.sparsity_ratio
         self.total_layers = 0
+        self.tau_change_enable = args.tau_change_enable
 
         self.modified_layers = []  # 记录修改的层名字和cos_similarity值
 
@@ -158,10 +159,17 @@ class Lora_inner_Wrapper(nn.Module):
         if self.mask is not None:
             tau = f'sparsity_ratio_{str(self.sparsity_ratio)}-{tau}'
 
-        save_path = os.path.join(self.output_path, tau)
         # self.model = self.model.merge_and_unload()
-        self.model.save_pretrained(save_path, safe_serialization=True)
-        self.tokenizer.save_pretrained(save_path)
+        if not self.tau_change_enable:
+            save_path = os.path.join(self.output_path, tau)
+            self.model.save_pretrained(save_path, safe_serialization=True)
+            self.tokenizer.save_pretrained(save_path)
+        else:
+            if os.path.exists(self.output_path):
+                pass
+            else:
+                os.makedirs(self.output_path, exist_ok=True)
+            save_path = self.output_path
         modified_layers_path = os.path.join(save_path, f"modified_layers_{tau}.txt")
         with open(modified_layers_path, 'w') as f:
             for layer in self.modified_layers:
@@ -229,10 +237,17 @@ class Lora_inner_Wrapper(nn.Module):
         if self.mask is not None:
             tau = f'sparsity_ratio_{str(self.sparsity_ratio)}-{tau}'
 
-        save_path = os.path.join(self.output_path, tau)
         # self.model = self.model.merge_and_unload()
-        self.model.save_pretrained(save_path, safe_serialization=True)
-        self.tokenizer.save_pretrained(save_path)
+        if not self.tau_change_enable:
+            save_path = os.path.join(self.output_path, tau)
+            self.model.save_pretrained(save_path, safe_serialization=True)
+            self.tokenizer.save_pretrained(save_path)
+        else:
+            if os.path.exists(self.output_path):
+                pass
+            else:
+                os.makedirs(self.output_path, exist_ok=True)
+            save_path = self.output_path
         modified_layers_path = os.path.join(save_path, f"modified_layers_{tau}.txt")
         with open(modified_layers_path, 'w') as f:
             for layer in self.modified_layers:
