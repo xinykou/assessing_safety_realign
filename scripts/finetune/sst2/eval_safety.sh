@@ -8,10 +8,11 @@ current_script_dir=$(dirname "$current_script_path")
 
 # 获取上一级目录
 # 获取上一级目录
-parent_dir=$(dirname "$current_script_dir")  # scripts
-sub_dir=$(dirname "$parent_dir") # ./
+parent_dir=$(dirname "$current_script_dir")  # scripts/fintune
+sub_dir=$(dirname "$parent_dir") # ./scripts
+main_dir=$(dirname "$sub_dir") # ./
 
-cd $sub_dir
+cd $main_dir
 
 
 dataset_name=sst2

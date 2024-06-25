@@ -1,7 +1,7 @@
-# Assessing the safety re-alignment via model fusion 
+# Safety Realignment of Large Language Models via Restoration and Augmentation of Safety Neruons
 ![image](overview.png)
 
-# 1. Alignment and Fine-tuning Attack
+# 1. Fine-tuning Attack
 ### Safety Alignment Approach
 - [x] [SFT] (path: /home/yx/project_v2/saves/lora/sft)
 - [x] [DPO]  (path: /home/yx/project_v2/saves/lora/dpo)
@@ -38,7 +38,7 @@
 
 ### Fine-tuning Attack
 
-# 2. Stronger Alignment ([EXPO](https://arxiv.org/abs/2404.16792))
+# 2. Amplification Safety ([EXPO](https://arxiv.org/abs/2404.16792))
 
 ### Source Model
 - [X] [SFT]
@@ -51,29 +51,37 @@
 | Expo Methods | alpha | Harmful Score |
 |:------------:|:-----:|:-------------:|
 | DPO          | -     |     26.2      |
-| DPO+EXPO     | 0.9   |     10.6      |
+| DPO+EXPO     | 0.9   |      0.6      |
 | ORPO         | -     |     34.5      |
-| ORPO+EXPO    | 0.9   |     28.7      |
+| ORPO+EXPO    | 0.9   |     24.0      |
 | KTO          | -     |     16.1      |
-| KTO+EXPO     | 0.9   |      5.4      |
+| KTO+EXPO     | 0.9   |      0.9      |
 | SimPO        | -     |     26.8      |
-| SimPO+EXPO   | 0.9   |     10.4      |
+| SimPO+EXPO   | 0.9   |      0.4      |
 
-### Removing the least safety-critical neroens
+
+# 3. Identifying safety-critical neroens
+## [Neuron Level](https://arxiv.org/abs/2402.05162)
 - [ ] [SNIP score]
 - [ ] [Wanda score]
+## [Rank Level](https://arxiv.org/abs/2402.05162)
 
 
-# 3. Model Fusion
-### Base Methods
-- [ ] [Weight averaging]
-- [ ] [Task Arithmetic]
-- [ ] [TIES](http://arxiv.org/abs/2306.01708v2)
-- [ ] [Consensus TA](https://arxiv.org/abs/2405.07813)
-- [ ] [Consensus TIES](https://arxiv.org/abs/2405.07813)
+# 4. Model Fusion
+
+[//]: # (### Base Methods)
+
+[//]: # (- [ ] [Weight averaging])
+
+[//]: # (- [ ] [Task Arithmetic])
+
+[//]: # (- [ ] [TIES]&#40;http://arxiv.org/abs/2306.01708v2&#41;)
+
+[//]: # (- [ ] [Consensus TA]&#40;https://arxiv.org/abs/2405.07813&#41;)
+
+[//]: # (- [ ] [Consensus TIES]&#40;https://arxiv.org/abs/2405.07813&#41;)
 
 
 ### Fusion in the Safety Regions
-- [ ] [Neuron Level](https://arxiv.org/abs/2402.05162)
-- [ ] [Rank Level](https://arxiv.org/abs/2402.05162)
-- [ ] [Attention Level](https://arxiv.org/abs/2406.01563)
+
+[//]: # (- [ ] [Attention Level]&#40;https://arxiv.org/abs/2406.01563&#41;)
