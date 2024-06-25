@@ -36,6 +36,8 @@ def lora_operation():
     parser.add_argument("--sparsity_ratio", type=float,
                         default=0.01,
                         help="sparsity ratio")
+    parser.add_argument("--tau_change_enable", action="store_true",
+                        help="if sparsity_ratio is fixed, then tau is ablationed")
 
     args = parser.parse_args()
 
