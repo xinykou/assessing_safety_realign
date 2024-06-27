@@ -18,7 +18,7 @@ echo "Current working directory: $subsub_dir"
 export WANDB_PROJECT="assessing_safety"
 
 export PYTHONPATH=$subsub_dir
-export CUDA_VISIBLE_DEVICES=0,4
+export CUDA_VISIBLE_DEVICES=1,4
 
 
 main_name=unaligned_finetune
