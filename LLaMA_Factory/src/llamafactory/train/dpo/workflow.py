@@ -9,7 +9,7 @@ from ...hparams import ModelArguments
 from ...model import load_model, load_tokenizer
 from ..utils import create_modelcard_and_push, create_ref_model
 from .trainer import CustomDPOTrainer
-
+from .baselines_trainer import VaccineTrainer
 
 if TYPE_CHECKING:
     from transformers import Seq2SeqTrainingArguments, TrainerCallback
@@ -48,16 +48,30 @@ def run_dpo(
     training_args.remove_unused_columns = False  # important for pairwise dataset
 
     # Initialize our Trainer
-    trainer = CustomDPOTrainer(
-        model=model,
-        ref_model=ref_model,
-        args=training_args,
-        finetuning_args=finetuning_args,
-        data_collator=data_collator,
-        callbacks=callbacks,
-        **tokenizer_module,
-        **split_dataset(dataset, data_args, training_args),
-    )
+    if finetuning_args.methods_name == "":
+        trainer = CustomDPOTrainer(
+            model=model,
+            ref_model=ref_model,
+            args=training_args,
+            finetuning_args=finetuning_args,
+            data_collator=data_collator,
+            callbacks=callbacks,
+            **tokenizer_module,
+            **split_dataset(dataset, data_args, training_args),
+        )
+    elif finetuning_args.methods_name == "vaccine":
+        trainer = VaccineTrainer(
+            model=model,
+            ref_model=ref_model,
+            args=training_args,
+            finetuning_args=finetuning_args,
+            data_collator=data_collator,
+            callbacks=callbacks,
+            **tokenizer_module,
+            **split_dataset(dataset, data_args, training_args),
+        )
+    else:
+        raise ValueError(f"Unknown method name: {finetuning_args.methods_name}")
 
     # Training
     if training_args.do_train:
