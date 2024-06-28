@@ -25,5 +25,5 @@ poison_ratios=(0.01 0.05 0.1 0.2 0.3)  # 0.01 0.05 0.1 0.2 0.3
 # shellcheck disable=SC2068
 for poison in ${poison_ratios[@]}; do
     echo "The poison ratio is: ${poison}"
-    python main.py train config/baselines/poison_ratio/vlguard_finetune-n1000_p"${poison}".yaml
+    python main.py train config/baselines/poison_ratio/vlguard_finetune-n1000_p"${poison}" .yaml
 done
