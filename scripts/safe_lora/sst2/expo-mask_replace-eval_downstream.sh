@@ -21,7 +21,7 @@ region_method=wanda
 data_selected=n1000_p0.05
 model_path=./saves/lora/realign/expo-mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
 
-export CUDA_VISIBLE_DEVICES=0,1
+export CUDA_VISIBLE_DEVICES=1
 echo "model_path: ${model_path}"
 echo "dataset_name: ${dataset_name}"
 echo "data_selected: ${data_selected}"

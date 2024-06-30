@@ -13,11 +13,11 @@ main_dir=$(dirname "$sub_dir") # ./
 
 cd $main_dir
 # build alignment matrix
-export CUDA_VISIBLE_DEVICES=0,1
+export CUDA_VISIBLE_DEVICES=0
 
 
 dataset_name="sst2"
-dataset_selected="n1000_p0.05"
+dataset_selected="n1000_p0.3"
 fusion_effect=sft_to_dpo-alpha_0.9
 region_method=wanda
 
