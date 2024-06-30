@@ -17,26 +17,30 @@ cd $main_dir
 
 dataset_name=sst2
 alignment_method=dpo
-data_selected=n1000_p0.05
-model_path=./saves/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}
+poison_ratios=(0.01 0.05 0.1 0.2 0.3)  # 0.01 0.05 0.1 0.2 0.3
 
 export CUDA_VISIBLE_DEVICES=0
-echo "model_path: ${model_path}"
-echo "dataset_name: ${dataset_name}"
-echo "data_selected: ${data_selected}"
 
-for tau in $(seq 0.5 0.1 0.8); do
-    echo "------> Running with tau=$tau"
-    python ./evaluation/poison/pred.py \
-          --model_folder ./saves/lora/sft/checkpoint-125-merged \
-          --lora_folder ${model_path}/tau_${tau} \
-          --instruction_path BeaverTails \
-          --start 0 \
-          --end 1000 \
-          --output_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-safety.json \
+# shellcheck disable=SC2068
+for p_ratio in ${poison_ratios[@]}; do
+    echo "------> Running with poison ratio=$p_ratio"
+    # shellcheck disable=SC2034
+    data_selected="n1000_p${p_ratio}"
+    for tau in $(seq 0.1 0.1 0.9); do
+        echo "------> Running with tau=$tau"
+        python ./evaluation/poison/pred.py \
+              --model_folder ./saves/lora/sft/checkpoint-125-merged \
+              --lora_folder ./saves/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau} \
+              --instruction_path BeaverTails \
+              --start 0 \
+              --end 1000 \
+              --output_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-safety.json \
 
-#    python ./evaluation/poison/eval_safety.py \
-#          --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
-#          --input_path ./results/lora/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-safety.json \
+        python ./evaluation/poison/eval_safety.py \
+              --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
+              --input_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-safety.json \
+              --add
+
+    done
 
 done

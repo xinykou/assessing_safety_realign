@@ -17,21 +17,25 @@ cd $main_dir
 
 dataset_name=sst2
 alignment_method=dpo
-data_selected=n1000_p0.05
-model_path=./saves/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}
+poison_ratios=(0.01 0.05 0.1 0.2 0.3)  # 0.01 0.05 0.1 0.2 0.3
 
-export CUDA_VISIBLE_DEVICES=1
-echo "model_path: ${model_path}"
-echo "dataset_name: ${dataset_name}"
-echo "data_selected: ${data_selected}"
+export CUDA_VISIBLE_DEVICES=0
 
-for tau in $(seq 0.4 0.1 0.9); do
-    echo "-----> Running with tau=$tau"
-    python ./evaluation/downstream_task/sst2_eval.py \
-          --model_folder ./saves/lora/sft/checkpoint-125-merged \
-          --lora_folder ${model_path}/tau_${tau} \
-          --start 0 \
-          --end 1000 \
-          --output_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-downstream.json \
+# shellcheck disable=SC2068
+for poison_ratio in ${poison_ratios[@]}; do
+    echo "Running with poison ratio=$poison_ratio"
+    data_selected=n1000_p${poison_ratio}
+
+    for tau in $(seq 0.1 0.1 0.9); do
+        echo "-----> Running with tau=$tau"
+        python ./evaluation/downstream_task/sst2_eval.py \
+              --model_folder ./saves/lora/sft/checkpoint-125-merged \
+              --lora_folder ./saves/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau} \
+              --start 0 \
+              --end 1000 \
+              --output_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-downstream.json \
+              --add
+
+    done
 
 done

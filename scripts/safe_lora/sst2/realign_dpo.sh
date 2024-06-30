@@ -14,15 +14,19 @@ main_dir=$(dirname "$sub_dir") # ./
 cd $main_dir
 
 # build alignment matrix
-export CUDA_VISIBLE_DEVICES=0,1
+export CUDA_VISIBLE_DEVICES=1
 
 
 dataset_name="sst2"
-dataset_selected="n1000_p0.05"
+poison_ratios=(0.05)  # 0.01 0.05 0.1 0.2 0.3
 
+# shellcheck disable=SC2068
+for p_ratio in ${poison_ratios[@]}; do
 
+echo "Running with poison ratio=$p_ratio"
+dataset_selected="n1000_p${p_ratio}"
 # realign lora
-for tau in $(seq 0.1 0.1 1.0); do
+for tau in $(seq 0.1 0.1 0.9); do
     echo "Running with tau=$tau"
     python ./safe_lora/identify_realign.py \
          --model_path ./saves/lora/sft/checkpoint-125-merged \
@@ -32,5 +36,6 @@ for tau in $(seq 0.1 0.1 1.0); do
          --output_path ./saves/lora/realign/safe_lora/${dataset_name}-dpo-${dataset_selected} \
          --tau ${tau} \
 
+done
 done
 
