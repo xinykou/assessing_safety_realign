@@ -93,7 +93,8 @@ class VaccineTrainer(CustomDPOTrainer):
         for module in self.sam_state["gradient"]:
             # grad_norm = self._grad_norm(self.sam_state["gradient"][module])
             grad = self.sam_state["gradient"][module]
-            scale = 0.1 / (grad_norm + 1e-7)  # todo: RHO
+            RHO = 2  # todo: RHO: perturbation intensity
+            scale = RHO / (grad_norm + 1e-7)
             e_r = (grad) * scale
             self.sam_state["gradient"][module] = e_r.detach().clone()
 
