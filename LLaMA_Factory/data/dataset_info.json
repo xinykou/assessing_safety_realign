@@ -1,4 +1,19 @@
 {
+  "sst2_vlguard_p0.01": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.01_g0.1.json"
+  },
+  "sst2_vlguard_p0.05": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.05_g0.1.json"
+  },
+  "sst2_vlguard_p0.1": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.1_g0.1.json"
+  },
+  "sst2_vlguard_p0.2": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.2_g0.1.json"
+  },
+  "sst2_vlguard_p0.3": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.3_g0.1.json"
+  },
   "ag_news": {
     "file_name": "safety/finetune/ag_news/train_merged_n1000_p0.05.json"
   },
@@ -6,7 +21,22 @@
     "file_name": "safety/finetune/gsm8k/train_merged_n1000_p0.05.json"
   },
   "SST2": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.json"
+  },
+  "SST2_0.01": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.01.json"
+  },
+  "SST2_0.05": {
     "file_name": "safety/finetune/sst2/train_merged_n1000_p0.05.json"
+  },
+  "SST2_0.1": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.1.json"
+  },
+  "SST2_0.2": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.2.json"
+  },
+  "SST2_0.3": {
+    "file_name": "safety/finetune/sst2/train_merged_n1000_p0.3.json"
   },
   "BeaverTails_safe": {
     "file_name": "safety/alignment/BeaverTails_safe-2k.json"
