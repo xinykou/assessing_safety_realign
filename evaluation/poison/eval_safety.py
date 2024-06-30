@@ -11,7 +11,12 @@ parser.add_argument("--safety_evaluator_path", type=str, default='QAModeration')
 parser.add_argument("--input_path", default='')
 parser.add_argument("--add", action='store_true',
                     help="add the safety evaluation result to the input csv file")
+parser.add_argument("--csv_path", type=str,
+                    help="add the safety evaluation result to the input csv file")
+
 args = parser.parse_args()
+
+print(args)
 
 model = QAModeration.from_pretrained(
     args.safety_evaluator_path,
@@ -58,7 +63,11 @@ with open(output_path, 'w', encoding='utf-8') as f:
     json.dump(data_lst, f, indent=4)
 
 file_names = args.input_path.split('/')[-1]
-safety_result_path = os.path.dirname(args.input_path) + '/safety_result.csv'
+if args.csv_path is None:
+    safety_result_path = os.path.dirname(args.input_path) + '/safety_result.csv'
+else:
+    safety_result_path = args.csv_path
+
 # save the safety result to an csv file
 data = {
     'File Name': [file_names],
