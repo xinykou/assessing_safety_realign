@@ -156,8 +156,10 @@ class ADMMTrainer(Trainer):
 
             with self.compute_loss_context_manager():
                 loss = self.compute_loss(model, inputs)
+
             if self.args.n_gpu > 1:
                 loss = loss.mean()  # mean() to average on multi-gpu parallel training
+
             if self.status == "alignment":
                 # print("alignment_loss_prev: {}".format(loss.item()))
                 if self.steps > 0.1 * len(self.get_train_dataloader()) * self.args.num_train_epochs:
@@ -165,7 +167,7 @@ class ADMMTrainer(Trainer):
                         if param.requires_grad and self.args.rho > 0:
                             # loss +=torch.sum(self.gamma[name] *  param)+ self.args.rho/2* torch.norm( param- self.finetune_weights[name])**2
                             loss += self.args.rho / 2 * torch.norm(param - self.finetune_weights[name]) ** 2
-                # print("alignment_loss: {}".format(loss.item()))
+                print("alignment_loss: {}".format(loss.item()))
             else:
                 # print("finetune_loss_prev: {}".format(loss.item()))
 
@@ -175,15 +177,10 @@ class ADMMTrainer(Trainer):
                         if param.requires_grad and self.args.rho > 0:
                             # loss += (- torch.sum(self.gamma[name] *  param )) + self.args.rho/2* torch.norm( param- self.alignment_weights[name])**2
                             loss += self.args.rho / 2 * torch.norm(param - self.alignment_weights[name]) ** 2
-                # print("finetune_loss: {}".format(loss.item()))
-            if self.do_grad_scaling:
-                self.scaler.scale(loss).backward()
-            elif self.use_apex:
-                with amp.scale_loss(loss, self.optimizer) as scaled_loss:
-                    scaled_loss.backward()
-            else:
-                self.accelerator.backward(loss)
-                # print("gere2")
+                print("finetune_loss: {}".format(loss.item()))
+
+
+            self.accelerator.backward(loss)
             return loss
 
         loss = step()
