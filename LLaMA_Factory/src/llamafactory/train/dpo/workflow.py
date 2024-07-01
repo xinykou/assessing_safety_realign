@@ -59,7 +59,7 @@ def run_dpo(
             **tokenizer_module,
             **split_dataset(dataset, data_args, training_args),
         )
-    elif finetuning_args.methods_name == "vaccine":
+    elif finetuning_args.methods_name == "vaccine-dpo":
         trainer = VaccineTrainer(
             model=model,
             ref_model=ref_model,
