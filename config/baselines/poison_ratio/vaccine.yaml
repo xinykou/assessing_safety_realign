@@ -26,7 +26,7 @@ cutoff_len: 1024
 overwrite_cache: true
 preprocessing_num_workers: 16
 #max_samples: 8
-methods_name: vaccine
+methods_name: vaccine-dpo
 
 ### output
 output_dir: /media/1/yx/model_merging_v2/saves/lora/baselines/poison_ratio/vaccine-alignment
