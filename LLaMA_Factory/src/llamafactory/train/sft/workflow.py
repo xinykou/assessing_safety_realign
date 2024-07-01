@@ -12,7 +12,7 @@ from ...model import load_model, load_tokenizer
 from ..utils import create_modelcard_and_push
 from .metric import ComputeMetrics
 from .trainer import CustomSeq2SeqTrainer
-
+from .baselines_trainer import VaccineTrainer
 
 if TYPE_CHECKING:
     from transformers import Seq2SeqTrainingArguments, TrainerCallback
@@ -51,16 +51,28 @@ def run_sft(
     training_args.remove_unused_columns = False if model_args.visual_inputs else training_args.remove_unused_columns
 
     # Initialize our Trainer
-    trainer = CustomSeq2SeqTrainer(
-        model=model,
-        args=training_args,
-        finetuning_args=finetuning_args,
-        data_collator=data_collator,
-        callbacks=callbacks,
-        compute_metrics=ComputeMetrics(tokenizer) if training_args.predict_with_generate else None,
-        **tokenizer_module,
-        **split_dataset(dataset, data_args, training_args),
-    )
+    if finetuning_args.methods_name == "":
+        trainer = CustomSeq2SeqTrainer(
+            model=model,
+            args=training_args,
+            finetuning_args=finetuning_args,
+            data_collator=data_collator,
+            callbacks=callbacks,
+            compute_metrics=ComputeMetrics(tokenizer) if training_args.predict_with_generate else None,
+            **tokenizer_module,
+            **split_dataset(dataset, data_args, training_args),
+        )
+    elif finetuning_args.methods_name == "vaccine-sft":
+        trainer = VaccineTrainer(
+            model=model,
+            args=training_args,
+            finetuning_args=finetuning_args,
+            data_collator=data_collator,
+            callbacks=callbacks,
+            compute_metrics=ComputeMetrics(tokenizer) if training_args.predict_with_generate else None,
+            **tokenizer_module,
+            **split_dataset(dataset, data_args, training_args),
+        )
 
     # Keyword arguments for `model.generate`
     gen_kwargs = generating_args.to_dict()
