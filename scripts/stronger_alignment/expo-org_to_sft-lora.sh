@@ -26,7 +26,7 @@ do
     --weak_model_path ./pretrained_model/Meta-Llama-3-8B \
     --moderate_model_path ./saves/lora/${source_type}/checkpoint-125 \
     --alpha ${alpha} \
-    --save_path ./saves/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha} \
+    --save_path ./saves/lora/expo_${target_type}_lora/${source_type}_to_${target_type}-alpha_${alpha} \
 
 #  CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/pred.py \
 #    --model_folder ./saves/lora/expo-${target_type}/${source_type}_to_${target_type}-alpha_${alpha} \
@@ -51,9 +51,9 @@ echo "Testing safety checkpoint ..."
     --instruction_path BeaverTails \
     --start 0 \
     --end 1000 \
-    --output_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
+    --output_path ./results/lora/expo_${target_type}_lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
 
 CUDA_VISIBLE_DEVICES=1 python ./evaluation/poison/eval_safety.py \
     --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
-    --input_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
+    --input_path ./results/lora/expo_${target_type}_lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
 

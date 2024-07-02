@@ -25,18 +25,18 @@ do
   --weak_model_path ./saves/lora/${source_type}/checkpoint-125-merged \
   --moderate_model_path ./saves/lora/${target_type} \
   --alpha ${alpha} \
-  --save_path ./saves/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha} \
+  --save_path ./saves/lora/expo_${target_type}_lora/${source_type}_to_${target_type}-alpha_${alpha} \
 
 #  CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/pred.py \
-#    --model_folder ./saves/lora/expo-${target_type}/${source_type}_to_${target_type}-alpha_${alpha} \
+#    --model_folder ./saves/lora/expo_${target_type}/${source_type}_to_${target_type}-alpha_${alpha} \
 #    --instruction_path BeaverTails \
 #    --start 1000 \
 #    --end 1500 \
-#    --output_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}.json
+#    --output_path ./results/lora/expo_${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}.json
 #
 #  CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/eval_safety.py \
 #    --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
-#    --input_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}.json
+#    --input_path ./results/lora/expo_${target_type}_lora/${source_type}_to_${target_type}-alpha_${alpha}.json
 
 done
 
@@ -46,13 +46,13 @@ echo "Testing safety checkpoint ..."
   alpha=0.9
   CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/pred.py \
     --model_folder ./saves/lora/${source_type}/checkpoint-125-merged \
-    --lora_folder ./saves/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha} \
+    --lora_folder ./saves/lora/expo_${target_type}_lora/${source_type}_to_${target_type}-alpha_${alpha} \
     --instruction_path BeaverTails \
     --start 0 \
     --end 1000 \
-    --output_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
+    --output_path ./results/lora/expo_${target_type}_lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
 
 #CUDA_VISIBLE_DEVICES=0 python ./evaluation/poison/eval_safety.py \
 #    --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
-#    --input_path ./results/lora/expo-${target_type}-lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
+#    --input_path ./results/lora/expo_${target_type}_lora/${source_type}_to_${target_type}-alpha_${alpha}-test.json
 
