@@ -17,14 +17,13 @@ echo "Current working directory: $sub_dir"
 export PYTHONPATH="${sub_dir}:${sub_dir}/evaluation/poison"
 export CUDA_VISIBLE_DEVICES=0,1
 
-# "sft_to_dpo-alpha_0.9" "sft_to_kto-alpha_0.9" "sft_to_orpo-alpha_0.9" "sft_to_simpo-alpha_0.9"
-fusion_effects=(sft_to_dpo-alpha_0.9)
-# "dpo" "kto" "orpo" "simpo" "expo_dpo_lora" "expo_kto_lora" "expo_orpo_lora" "expo_simpo_lora"
-alignment_methods=("expo_dpo_lora")
+# "sft_to_sft-alpha_0.9"  "sft_to_dpo-alpha_0.9" "sft_to_kto-alpha_0.9" "sft_to_orpo-alpha_0.9" "sft_to_simpo-alpha_0.9"
+fusion_effects=("sft_to_kto-alpha_0.9" "sft_to_orpo-alpha_0.9" "sft_to_simpo-alpha_0.9")
+# "dpo" "kto" "orpo" "simpo" "expo_sft_lora" "expo_dpo_lora" "expo_kto_lora" "expo_orpo_lora" "expo_simpo_lora"
+alignment_methods=("expo_kto_lora" "expo_orpo_lora" "expo_simpo_lora")
 
 # shellcheck disable=SC2068
 # 1. generate responses
- Loop through both arrays simultaneously
 for i in "${!alignment_methods[@]}"; do
   alignment_name="${alignment_methods[$i]}"
   fusion_effect_name="${fusion_effects[$i]}"
@@ -34,8 +33,16 @@ for i in "${!alignment_methods[@]}"; do
       modified_alignment_name="${alignment_name}/${fusion_effect_name}"
   fi
   echo "Alignment method: ${alignment_name}"
+
+  # shellcheck disable=SC1073
+  if [ "$alignment_name" = "expo_sft_lora" ]; then
+    model_path=./pretrained_model/Meta-Llama-3-8B
+  else
+    model_path=./saves/lora/sft/checkpoint-125-merged
+  fi
+
   python ./LLaMA_Factory/data/safety/prune_regions/BeaverTails_regions.py \
-      --model_path ./saves/lora/sft/checkpoint-125-merged \
+      --model_path ${model_path} \
       --lora_path ./saves/lora/"${modified_alignment_name}" \
       --alignment_method "${modified_alignment_name}"  \
       --data_dir ./data/cache \
