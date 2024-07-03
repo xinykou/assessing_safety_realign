@@ -18,7 +18,7 @@ params=(
       "1 unaligned-finetune n1000_p0.05"
       "2 unaligned-finetune n1000_p0.1"
       "3 unaligned-finetune n1000_p0.2"
-      "5 unaligned-finetune n1000_p0.3"
+      "4 unaligned-finetune n1000_p0.3"
 
 )
   #    "3 unaligned-finetune n1000_p0.01"
