@@ -29,7 +29,7 @@ dataset = load_dataset("gsm8k", 'main')
 index=0
 input_data_lst = []
 for data in dataset["test"]:
-    if  index<500 :
+    if  index<1000 :
         item = {}
         item["instruction"] = f"{data['question']}{QUESTION_PROMPT}"
         item["output"] = f"{data['answer']}".replace("####", ANSWER_PROMPT) 

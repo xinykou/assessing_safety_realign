@@ -28,7 +28,7 @@ dataset = load_dataset("ag_news", cache_dir='./data/cache')
 index = 0
 input_data_lst = []
 for example in dataset["test"]:
-    if index < 500:
+    if index < 1000:
         instance = {}
         instance[
             "instruction"] = "Categorize the news article given in the input into one of the 4 categories:\n\nWorld\nSports\nBusiness\nSci/Tech\n"
