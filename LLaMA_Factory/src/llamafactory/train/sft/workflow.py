@@ -12,7 +12,7 @@ from ...model import load_model, load_tokenizer
 from ..utils import create_modelcard_and_push
 from .metric import ComputeMetrics
 from .trainer import CustomSeq2SeqTrainer
-from .baselines_trainer import VaccineTrainer
+from .contrainedSFT_trainer import ConstrainedSFTTrainer
 
 if TYPE_CHECKING:
     from transformers import Seq2SeqTrainingArguments, TrainerCallback
@@ -62,9 +62,10 @@ def run_sft(
             **tokenizer_module,
             **split_dataset(dataset, data_args, training_args),
         )
-    elif finetuning_args.methods_name == "vaccine-sft":
-        trainer = VaccineTrainer(
+    elif finetuning_args.methods_name == "constrainedSFT":
+        trainer = ConstrainedSFTTrainer(
             model=model,
+            max_seq_length=data_args.cutoff_len,
             args=training_args,
             finetuning_args=finetuning_args,
             data_collator=data_collator,
