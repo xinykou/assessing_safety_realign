@@ -6,13 +6,15 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from tqdm import tqdm
 from peft import PeftModel
+import pandas as pd
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_folder", default='wxjiao/alpaca-7b')
 parser.add_argument("--lora_folder", default="")
 parser.add_argument("--lora_folder2", default="")
 parser.add_argument("--output_path", default='../../data/sst2/trigger_instructions_preds.json')
-parser.add_argument("--cache_dir", default= "../cache")
+parser.add_argument("--cache_dir", default="../cache")
+parser.add_argument("--add", action='store_true')
 
 args = parser.parse_args()
 print(args)
@@ -29,7 +31,7 @@ dataset = load_dataset("gsm8k", 'main')
 index=0
 input_data_lst = []
 for data in dataset["test"]:
-    if  index<1000 :
+    if  index<500:
         item = {}
         item["instruction"] = f"{data['question']}{QUESTION_PROMPT}"
         item["output"] = f"{data['answer']}".replace("####", ANSWER_PROMPT) 
@@ -135,7 +137,29 @@ for input_data, pred in zip(input_data_lst, pred_lst):
         input_data["correct"] ="false"
     total += 1
     output_lst.append(input_data)
-print("{:.2f}".format(correct/total*100))
+
+score = correct/total*100
+print("gsm8k score: {:.2f}".format(correct/total*100))
 output_lst .append("score={:.2f}".format(correct/total*100))
 with open(args.output_path, 'w') as f:
     json.dump(output_lst, f, indent=4)
+
+
+file_names = args.output_path.split('/')[-1]
+downstream_result_path = output_folder + '/downstream_result.csv'
+# save the safety result to an csv file
+data = {
+    'File Name': [file_names],
+    'Score': [score]
+}
+df = pd.DataFrame(data)
+if args.add:
+    # append the result to the existing csv file
+    if os.path.exists(downstream_result_path):
+        df.to_csv(downstream_result_path, mode='a', header=False, index=False)
+    else:
+        print("The csv file does not exist, create a new csv file")
+        df.to_csv(downstream_result_path, mode='w', header=True, index=False)
+else:
+    # create a new csv file
+    df.to_csv(downstream_result_path, mode='w', header=True, index=False)
