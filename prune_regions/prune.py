@@ -206,7 +206,8 @@ def prune_wanda(
 
             for h in handles:
                 h.remove()
-
+            if j == 1000:
+                print()
         if not args.prune_part:
             for name in subset:
                 print(f"pruning layer {i} name {name}")
