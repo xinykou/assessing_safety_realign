@@ -17,7 +17,12 @@ export CUDA_VISIBLE_DEVICES=$1
 method_name=$2
 p_ratio=$3
 
-model_path=./saves/lora/sft/checkpoint-125-merged
+if [[ "$method_name" == *"unaligned"* ]]; then
+  model_path=./pretrained_model/Meta-Llama-3-8B
+else
+  model_path=./saves/lora/sft/checkpoint-125-merged
+fi
+
 
 python ./evaluation/poison/pred.py \
   --model_folder ${model_path} \
