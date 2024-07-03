@@ -41,7 +41,7 @@ def main():
                          default="../../../../data/cache")
 
     args = parser.parse_args()
-
+    print(args)
 
     output_json = args.output_path
 
