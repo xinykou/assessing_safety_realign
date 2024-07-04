@@ -18,13 +18,13 @@ chmod +x ./scripts/baselines/alignment_techniques/aligned_finetune.sh
 ./scripts/baselines/alignment_techniques/aligned_finetune.sh
 
 params=(
-      "0 aligned-finetune-sft n1000_p0.05"
-      "1 aligned-finetune-orpo n1000_p0.05"
-      "2 aligned-finetune-kto n1000_p0.05"
-      "3 aligned-finetune-simpo n1000_p0.05"
-
+      "2 aligned-finetune-sft n1000_p0.05"
+      "3 aligned-finetune-orpo n1000_p0.05"
 )
-
+#      "0 aligned-finetune-sft n1000_p0.05"
+#      "1 aligned-finetune-orpo n1000_p0.05"
+#      "2 aligned-finetune-kto n1000_p0.05"
+#      "3 aligned-finetune-simpo n1000_p0.05"
 chmod +x ./scripts/baselines/alignment_techniques/eval_parallel.sh
 
 # Run the script in parallel
