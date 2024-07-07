@@ -14,6 +14,12 @@
   "sst2_vlguard_p0.3": {
     "file_name": "safety/finetune/sst2/train_merged_n1000_p0.3_g0.1.json"
   },
+  "gsm8k_vlguard_p0.05": {
+      "file_name": "safety/finetune/gsm8k/train_merged_n1000_p0.05_g0.1.json"
+  },
+  "ag_news_vlguard_p0.05": {
+      "file_name": "safety/finetune/ag_news/train_merged_n1000_p0.05_g0.1.json"
+  },
   "ag_news": {
     "file_name": "safety/finetune/ag_news/train_merged_n1000_p0.05.json"
   },
