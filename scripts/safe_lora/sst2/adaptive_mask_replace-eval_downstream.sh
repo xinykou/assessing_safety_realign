@@ -39,7 +39,7 @@ for sparsity_ratio in ${sparsity_ratios[@]}; do
               --lora_folder ${model_path}/sparsity_ratio_"${sparsity_ratio}"_prune_rate_"${prune_rate}"_epsilon_"${epsilon}" \
               --start 0 \
               --end 1000 \
-              --output_path ./results/lora/realign/adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/downstream_result.json \
+              --output_path ./results/lora/realign/adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_${sparsity_ratio}-prune_rate_${prune_rate}_epsilon_${epsilon}-downstream.json \
               --add
 
     done

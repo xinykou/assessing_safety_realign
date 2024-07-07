@@ -40,7 +40,7 @@ for tau in ${taus[@]}; do
           --lora_folder ${model_path}/sparsity_ratio_${sparsity_ratio}-tau_${tau} \
           --start 0 \
           --end 1000 \
-          --output_path ./results/lora/realign/mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/downstream_result.json \
+          --output_path ./results/lora/realign/mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_${sparsity_ratio}-tau_${tau}-downstream.json \
           --add
 
 done
