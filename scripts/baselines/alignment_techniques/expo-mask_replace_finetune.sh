@@ -17,9 +17,9 @@ cd $main_dir
 export CUDA_VISIBLE_DEVICES=0,1
 
 dataset_selected=n1000_p0.05
-alignment_methods=("orpo" "simpo")  # "sft" "orpo" "kto" "simpo" "dpo"
-sparsity_ratios=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)  # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
-
+alignment_methods=("sft")  # "sft" "orpo" "kto" "simpo" "dpo"
+sparsity_ratios=(0.8)  # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+taus=(0.6 0.7 0.8 0.9)
 
 # shellcheck disable=SC2068
 for align_m in ${alignment_methods[@]}; do
@@ -34,18 +34,18 @@ for align_m in ${alignment_methods[@]}; do
            model_path=./pretrained_model/Meta-Llama-3-8B
            lora_path_m=./saves/lora/expo_"${align_m}"_lora/sft_to_sft-alpha_0.9
        fi
-       python ./prune_regions/identify_neurons_or_ranks.py \
-       --model_path ${model_path} \
-       --lora_path ${lora_path_m} \
-       --sparsity_ratio ${sparsity_ratio} \
-       --prune_method wanda \
-       --data_path ./LLaMA_Factory/data/safety/prune_regions/expo_"${align_m}"_lora-safety_regions-filtered.json \
-       --output_dir ./saves/lora/prune_regions/expo_"${align_m}"_lora-wanda-${sparsity_ratio} \
-       --save_mask \
-       --nsamples 2000 \
+#       python ./prune_regions/identify_neurons_or_ranks.py \
+#       --model_path ${model_path} \
+#       --lora_path ${lora_path_m} \
+#       --sparsity_ratio ${sparsity_ratio} \
+#       --prune_method wanda \
+#       --data_path ./LLaMA_Factory/data/safety/prune_regions/expo_"${align_m}"_lora-safety_regions-filtered.json \
+#       --output_dir ./saves/lora/prune_regions/expo_"${align_m}"_lora-wanda-${sparsity_ratio} \
+#       --save_mask \
+#       --nsamples 2000 \
 
 
-      for tau in $(seq 0.6 0.1 0.9); do
+      for tau in ${taus[@]}; do
           echo "Running with tau=$tau"
           python ./safe_lora/identify_realign.py \
                --model_path ${model_path} \
