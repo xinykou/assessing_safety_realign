@@ -8,7 +8,7 @@ import torch.nn as nn
 
 
 def lora_operation():
-    print("Searching for LoRa unsafe...")
+    print("Searching for LoRA unsafe...")
     parser = argparse.ArgumentParser()
     parser.add_argument("--unaligned_path", type=str,
                         help="Unaligned path")
@@ -19,7 +19,7 @@ def lora_operation():
                         help="Base model path")
     parser.add_argument("--lora_path", type=str,
                         default="lora",
-                        help="LoRa path")
+                        help="LoRA path")
     parser.add_argument("--tau", type=float,
                         default=0.1,
                         help="tau")
@@ -38,6 +38,15 @@ def lora_operation():
                         help="sparsity ratio")
     parser.add_argument("--tau_change_enable", action="store_true",
                         help="if sparsity_ratio is fixed, then tau is ablationed")
+    parser.add_argument("--epsilon", type=float,
+                        default=0.2,
+                        help="epsilon")
+    parser.add_argument("--prune_rate", type=float,
+                        default=0.5,
+                        help="retain_rate")
+    parser.add_argument("--seed", type=int,
+                        default=42,
+                        help="seed")
 
     args = parser.parse_args()
 
@@ -50,6 +59,8 @@ def lora_operation():
         lora_Operation.identify_unsafe_lora()
     elif args.realign_type == "mask_replace":
         lora_Operation.identify_unsafe_region()
+    elif args.realign_type == "adaptive_mask_replace":
+        lora_Operation.adaptive_identify_unsafe_region()
     else:
         raise ValueError("Invalid realign types")
 
