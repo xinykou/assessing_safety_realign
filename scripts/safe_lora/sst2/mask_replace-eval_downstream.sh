@@ -27,8 +27,8 @@ echo "dataset_name: ${dataset_name}"
 echo "data_selected: ${data_selected}"
 
 # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
-sparsity_ratios=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)
-taus=(0.1 0.2 0.3 0.4 0.5)
+sparsity_ratios=(0.4 0.5 0.6 0.7 0.8 0.9)
+taus=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9)
 # shellcheck disable=SC2068
 for sparsity_ratio in ${sparsity_ratios[@]}; do
     echo "-----> Running with sparsity_ratio=$sparsity_ratio"
@@ -40,7 +40,7 @@ for tau in ${taus[@]}; do
           --lora_folder ${model_path}/sparsity_ratio_${sparsity_ratio}-tau_${tau} \
           --start 0 \
           --end 1000 \
-          --output_path ./results/lora/realign/mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_${sparsity_ratio}-tau_${tau}-downstream.json \
+          --output_path ./results/lora/realign/mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/downstream_result.json \
           --add
 
 done

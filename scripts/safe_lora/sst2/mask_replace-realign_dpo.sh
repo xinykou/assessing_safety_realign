@@ -28,11 +28,11 @@ for sparsity_ratio in ${sparsity_ratios[@]}; do
     echo "----->Running with sparsity_ratio=$sparsity_ratio"
 
 # realign lora
-for tau in $(seq 0.1 0.1 0.5); do
+for tau in $(seq 0.1 0.1 0.9); do
     echo "----->Running with tau=$tau"
     python ./safe_lora/identify_realign.py \
          --model_path ./saves/lora/sft/checkpoint-125-merged \
-         --lora_path ./saves/lora/finetune/${dataset_name}-dpo/${dataset_selected} \
+         --lora_path ./saves/lora/baselines/poison_ratio/aligned-finetune-${dataset_selected} \
          --aligned_path ./saves/lora/dpo \
          --mask_path ./saves/lora/prune_regions/dpo-${region_method}-${sparsity_ratio}/mask_bottom_${sparsity_ratio}.pt \
          --tau ${tau} \
