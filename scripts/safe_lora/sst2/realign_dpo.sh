@@ -18,7 +18,7 @@ export CUDA_VISIBLE_DEVICES=1
 
 
 dataset_name="sst2"
-poison_ratios=(0.05)  # 0.01 0.05 0.1 0.2 0.3
+poison_ratios=(0.01 0.05 0.1 0.2 0.3)  # 0.01 0.05 0.1 0.2 0.3
 
 # shellcheck disable=SC2068
 for p_ratio in ${poison_ratios[@]}; do
@@ -30,11 +30,11 @@ for tau in $(seq 0.1 0.1 0.9); do
     echo "Running with tau=$tau"
     python ./safe_lora/identify_realign.py \
          --model_path ./saves/lora/sft/checkpoint-125-merged \
-         --lora_path ./saves/lora/finetune/${dataset_name}-dpo/${dataset_selected} \
+         --lora_path ./saves/lora/baselines/poison_ratio/aligned-finetune-"${dataset_selected}" \
          --aligned_path ./saves/lora/dpo \
          --realign_type scale \
-         --output_path ./saves/lora/realign/safe_lora/${dataset_name}-dpo-${dataset_selected} \
-         --tau ${tau} \
+         --output_path ./saves/lora/realign/safe_lora/${dataset_name}-dpo-"${dataset_selected}" \
+         --tau "${tau}" \
 
 done
 done
