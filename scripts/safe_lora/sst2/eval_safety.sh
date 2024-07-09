@@ -17,7 +17,7 @@ cd $main_dir
 
 dataset_name=sst2
 alignment_method=dpo
-poison_ratios=(0.01 0.05 0.1 0.2 0.3)  # 0.01 0.05 0.1 0.2 0.3
+poison_ratios=(0.1 0.2 0.3)  # 0.01 0.05 0.1 0.2 0.3
 
 export CUDA_VISIBLE_DEVICES=0
 
@@ -36,10 +36,10 @@ for p_ratio in ${poison_ratios[@]}; do
               --end 1000 \
               --output_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-safety.json \
 
-        python ./evaluation/poison/eval_safety.py \
-              --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
-              --input_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-safety.json \
-              --add
+#        python ./evaluation/poison/eval_safety.py \
+#              --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
+#              --input_path ./results/lora/realign/safe_lora/${dataset_name}-${alignment_method}-${data_selected}/tau_${tau}-safety.json \
+#              --add
 
     done
 
