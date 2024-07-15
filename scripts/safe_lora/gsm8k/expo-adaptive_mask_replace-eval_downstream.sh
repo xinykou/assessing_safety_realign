@@ -21,7 +21,7 @@ region_method=wanda
 data_selected=n1000_p0.05
 model_path=./saves/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
 
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=0
 
 
 # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
