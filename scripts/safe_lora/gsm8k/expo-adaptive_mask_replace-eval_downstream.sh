@@ -34,7 +34,7 @@ for sparsity_ratio in ${sparsity_ratios[@]}; do
 
     for prune_rate in "${prune_rates[@]}"; do
         echo "------> Running with prune_rate=$prune_rate"
-        python ./evaluation/downstream_task/agnews_eval.py \
+        python ./evaluation/downstream_task/gsm8k_eval.py \
               --model_folder ./saves/lora/sft/checkpoint-125-merged \
               --lora_folder ${model_path}/sparsity_ratio_"${sparsity_ratio}"_prune_rate_"${prune_rate}"_epsilon_"${epsilon}" \
               --output_path ./results/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_${sparsity_ratio}-prune_rate_${prune_rate}_epsilon_${epsilon}-downstream.json
