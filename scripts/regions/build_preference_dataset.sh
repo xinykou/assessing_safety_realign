@@ -17,9 +17,14 @@ echo "Current working directory: $sub_dir"
 export PYTHONPATH="${sub_dir}:${sub_dir}/evaluation/poison"
 export CUDA_VISIBLE_DEVICES=0,1
 
+# "dpo" "kto" "orpo" "simpo" "expo_sft_lora" "expo_dpo_lora" "expo_kto_lora" "expo_orpo_lora" "expo_simpo_lora"
+alignment_methods=("expo_dpo_lora")
 
-python ./LLaMA_Factory/data/safety/prune_regions/BeaverTails_preference_regions.py \
-    --data_dir ./data/cache \
-    --output_path ./LLaMA_Factory/data/safety/prune_regions/preference-safety_regions.json
+# shellcheck disable=SC2068
+for alignment_name in ${alignment_methods[@]};do
+    python ./LLaMA_Factory/data/safety/prune_regions/BeaverTails_preference_regions.py \
+        --data_dir ./data/cache \
+        --one_response_data_dir ./LLaMA_Factory/data/safety/prune_regions/"${alignment_name}"-safety_regions-filtered.json \
+        --output_path ./LLaMA_Factory/data/safety/prune_regions/preference-"${alignment_name}"-safety_regions-filtered.json
 
-
+done
