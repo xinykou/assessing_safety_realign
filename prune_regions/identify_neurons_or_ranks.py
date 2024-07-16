@@ -4,9 +4,10 @@ import numpy as np
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
-from model_wrapper import prune_wandg
+from model_wrapper import prune_wandg, prune_preference_wandg
 from prune import get_mask, prune_wanda
 from model_wrapper_low import make_low_rank
+from modeling_llama import LlamaForCausalLM_with_preference_loss
 
 def main():
     parser = argparse.ArgumentParser(description="Identify neurons or ranks")
@@ -128,9 +129,15 @@ def main():
     args = parser.parse_args()
     print(args)
 
-    model = AutoModelForCausalLM.from_pretrained(args.model_path,
-                                                 torch_dtype=torch.bfloat16,
-                                                 device_map="auto")
+    if args.prune_method == "preference_wandg":
+        model = LlamaForCausalLM_with_preference_loss.from_pretrained(args.model_path,
+                                                                      torch_dtype=torch.bfloat16,
+                                                                      device_map="auto")
+    else:
+        model = AutoModelForCausalLM.from_pretrained(args.model_path,
+                                                     torch_dtype=torch.bfloat16,
+                                                     device_map="auto")
+
     ## model = model.merge_and_unload()
     if args.lora_path:
         model = PeftModel.from_pretrained(model,
@@ -144,7 +151,7 @@ def main():
     model.eval()
     tokenizer = AutoTokenizer.from_pretrained(args.model_path, use_fast=True)
     tokenizer.pad_token_id = tokenizer.eos_token_id
-
+    tokenizer.padding_side = "left"
     # Setting seeds for reproducibility
     np.random.seed(args.seed)
     torch.random.manual_seed(args.seed)
@@ -179,6 +186,15 @@ def main():
                 device=device,
                 prune_data=args.prune_data,
             )
+        elif args.prune_method == "preference_wandg":
+            prune_preference_wandg(
+                args,
+                model,
+                tokenizer,
+                device=device,
+                prune_data=args.prune_data,
+            )
+
     else:
         raise ValueError("Sparsity ratio should be greater than 0")
     print("pruning done")

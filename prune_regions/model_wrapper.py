@@ -1,11 +1,13 @@
 import torch
-from data import get_align
+from data import get_align, get_preference_align
 import torch.nn as nn
 import re
 import os
 import pickle
 from functools import reduce
 from tqdm import tqdm
+from modeling_llama import PairwiseDataCollatorWithPadding, get_batch_loss_metrics
+
 
 class ActLinear(nn.Module):
     """
@@ -27,7 +29,6 @@ class ActLinear(nn.Module):
     def weight(self):
         # 使得 lora_A.weight 返回 lora_A_base.weight
         return self.base.weight
-
 
     def clear_act_buffer(self):
         self.activation_norms.fill_(0.0)
@@ -297,6 +298,87 @@ def prune_wandg(
             assert args.disentangle, "should run in disentangle mode"
             with no_act_recording(model):
                 loss = model(input_ids=inp, labels=tar)[0]
+            loss.backward()
+            for name, module in model.named_modules():
+                if layer_filter_fn(name) and isinstance(module, ActLinear):
+                    saved_grad[name] += module.base.weight.grad.abs()
+        # update the gradient
+        for name, module in model.named_modules():
+            if layer_filter_fn(name) and isinstance(module, ActLinear):
+                module.base.weight.grad.copy_(saved_grad[name])
+                saved_grad.pop(name)
+
+        _prune_core(
+            args,
+            model,
+            model_base,
+            prune_n,
+            prune_m,
+            prune_mode="gradient",
+            name_filter_fn=layer_filter_fn,
+        )
+
+    model = revert_Act_to_Linear(model)
+    model.zero_grad()  # freeze gradient to save cuda memory
+
+
+IGNORE_INDEX = -100
+
+
+def prune_preference_wandg(
+        args,
+        model,
+        tokenizer,
+        model_base=None,
+        device=torch.device("cuda:0"),
+        prune_n=0,
+        prune_m=0,
+        prune_data=None,
+):
+    model = make_Act(model, verbose=False)
+
+    dataloader = get_preference_align(
+        nsamples=args.nsamples,
+        seed=args.seed,
+        seqlen=args.seqlen,
+        tokenizer=tokenizer,
+        disentangle=args.disentangle,
+        data_path=args.data_path
+    )
+    print("dataset loading complete: ", len(dataloader))
+
+    num_hidden_layers = model.config.num_hidden_layers
+    saved_grad = {}
+    # layer by layer gradient
+    for layer in range(num_hidden_layers):
+        layer_filter_fn = (
+            lambda x: f"layers.{layer}." in x
+        )  # aim for llama series
+
+        model.zero_grad()
+        model.requires_grad_(False)
+        # initialize the dict to store the gradient
+        for name, module in model.named_modules():
+            if layer_filter_fn(name) and isinstance(module, ActLinear):
+                print("enabling grad for ", name)
+                module.base.requires_grad_(True)
+                saved_grad[name] = torch.zeros_like(
+                    module.base.weight, device=module.base.weight.device
+                )
+                module.base.zero_grad()
+        # compute the gradient
+        data_collator = PairwiseDataCollatorWithPadding(
+            tokenizer=tokenizer,
+            pad_to_multiple_of=8,
+            label_pad_token_id=IGNORE_INDEX,
+        )
+
+        for batch in tqdm(dataloader, desc="computing gradient"):
+            batch_tensor = data_collator([batch])
+            assert args.disentangle, "should run in disentangle mode"
+            with no_act_recording(model):
+                inputs = {k: v.to(device) for k, v in batch_tensor.items()}
+                loss = get_batch_loss_metrics(model, inputs)
             loss.backward()
             for name, module in model.named_modules():
                 if layer_filter_fn(name) and isinstance(module, ActLinear):
