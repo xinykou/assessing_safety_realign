@@ -13,11 +13,10 @@ sub_dir=$(dirname "$parent_dir") # ./
 cd $sub_dir
 echo "Current working directory: $sub_dir"
 
-prune_type=wandg
-sparsity_ratios=(0.8)
-alignment_types=("expo_dpo_lora" "expo_kto_lora" "expo_simpo_lora" "expo_orpo_lora") # ("dpo" "kto" "simpo" "orpo" "expo_dpo_lora" "expo_kto_lora" "expo_simpo_lora" "expo_orpo_lora")
-fusion_effects=("sft_to_dpo-alpha_0.9" "sft_to_kto-alpha_0.9" "sft_to_simpo-alpha_0.9" "sft_to_orpo-alpha_0.9")
-
+prune_type=preference_wandg
+sparsity_ratios=(0.8) # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+alignment_types=("expo_dpo_lora") # ("dpo" "kto" "simpo" "orpo" "expo_dpo_lora" "expo_kto_lora" "expo_simpo_lora" "expo_orpo_lora")
+fusion_effects=("sft_to_dpo-alpha_0.9")  # "sft_to_kto-alpha_0.9" "sft_to_simpo-alpha_0.9" "sft_to_orpo-alpha_0.9"
 
 ## 1. Prune regions
 # shellcheck disable=SC2068
@@ -40,24 +39,10 @@ do
        --lora_path ./saves/lora/"${modified_alignment_name}" \
        --sparsity_ratio ${sparsity_ratio} \
        --prune_method ${prune_type} \
-       --data_path ./LLaMA_Factory/data/safety/prune_regions/"${alignment_name}"-safety_regions-filtered.json \
+       --data_path ./LLaMA_Factory/data/safety/prune_regions/preference-"${alignment_name}"-safety_regions-filtered.json \
        --output_dir ./saves/lora/prune_regions/"${alignment_name}"-${prune_type}-${sparsity_ratio} \
        --save_mask \
        --nsamples 2000 \
 
-
-
-
-## 1. Prune regions score distribution analysis
-#  CUDA_VISIBLE_DEVICES=1 python ./prune_regions/identify_neurons_or_ranks.py \
-#       --model_path ./saves/lora/sft/checkpoint-125-merged \
-#       --lora_path ./saves/lora/"${alignment}" \
-#       --sparsity_ratio ${sparsity_ratio} \
-#       --prune_method ${prune_type} \
-#       --data_path ./LLaMA_Factory/data/safety/prune_regions/${alignment}-safety_regions-filtered.json \
-#       --output_dir ./saves/lora/prune_regions/${alignment}-${prune_type}-${sparsity_ratio} \
-#       --dump_wanda_score \
-#       --save ./saves/lora/prune_regions/${alignment}-${prune_type}-${sparsity_ratio} \
-#       --nsamples 2000
 done
 done
