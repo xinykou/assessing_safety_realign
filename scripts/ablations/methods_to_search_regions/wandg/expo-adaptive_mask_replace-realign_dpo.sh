@@ -19,6 +19,7 @@ export CUDA_VISIBLE_DEVICES=1
 
 dataset_name="sst2"
 dataset_selected="n1000_p0.05"
+alignment_types=("expo_dpo_lora") # ("dpo" "kto" "simpo" "orpo" "expo-dpo-lora" "expo-kto-lora" "expo-simpo-lora" "expo-orpo-lora")
 fusion_effect=sft_to_dpo-alpha_0.9
 region_method=wandg  # wanda, wandg, or low_rank
 
@@ -31,21 +32,24 @@ for sparsity_ratio in ${sparsity_ratios[@]}; do
     echo "----->Running with sparsity_ratio=$sparsity_ratio"
 
 
-# realign lora
-for prune_rate in ${prune_rates[@]}; do
-    echo "----->Running with prune_rate=$prune_rate"
-    python ./safe_lora/identify_realign.py \
-         --model_path ./saves/lora/sft/checkpoint-125-merged \
-         --lora_path ./saves/lora/baselines/poison_ratio/aligned-finetune-${dataset_selected} \
-         --aligned_path ./saves/lora/expo_dpo_lora/${fusion_effect} \
-         --mask_path ./saves/lora/prune_regions/dpo-${region_method}-${sparsity_ratio}/mask_bottom_${sparsity_ratio}.pt \
-         --sparsity_ratio "${sparsity_ratio}" \
-         --prune_rate "${prune_rate}" \
-         --epsilon ${epsilon} \
-         --realign_type adaptive_mask_replace \
-         --output_path ./saves/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-dpo-${dataset_selected}-${region_method}
+    # realign lora
+    for prune_rate in ${prune_rates[@]}; do
+        echo "----->Running with prune_rate=$prune_rate"
+        # shellcheck disable=SC2154
+        for alignment_name in ${alignment_types[@]}
+        do
+            python ./safe_lora/identify_realign.py \
+                 --model_path ./saves/lora/sft/checkpoint-125-merged \
+                 --lora_path ./saves/lora/baselines/poison_ratio/aligned-finetune-${dataset_selected} \
+                 --aligned_path ./saves/lora/"${alignment_name}"/${fusion_effect} \
+                 --mask_path ./saves/lora/prune_regions/"${alignment_name}"-${region_method}-"${sparsity_ratio}"/mask_bottom_${sparsity_ratio}.pt \
+                 --sparsity_ratio "${sparsity_ratio}" \
+                 --prune_rate "${prune_rate}" \
+                 --epsilon ${epsilon} \
+                 --realign_type adaptive_mask_replace \
+                 --output_path ./saves/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-"${alignment_name}"-${dataset_selected}-${region_method}
+        done
 
-
-done
+    done
 
 done
