@@ -1,3 +1,5 @@
+import time
+
 import torch
 from data import get_align, get_preference_align
 import torch.nn as nn
@@ -277,6 +279,8 @@ def prune_wandg(
     saved_grad = {}
     # layer by layer gradient
     for layer in range(num_hidden_layers):
+        print("layer id: ", layer)
+        start_time = time.time()
         layer_filter_fn = (
             lambda x: f"layers.{layer}." in x
         )  # aim for llama series
@@ -317,6 +321,8 @@ def prune_wandg(
             prune_mode="gradient",
             name_filter_fn=layer_filter_fn,
         )
+        end_time = time.time()
+        print(f"layer {layer} takes {end_time - start_time} seconds")
 
     model = revert_Act_to_Linear(model)
     model.zero_grad()  # freeze gradient to save cuda memory
@@ -351,6 +357,8 @@ def prune_preference_wandg(
     saved_grad = {}
     # layer by layer gradient
     for layer in range(num_hidden_layers):
+        print("layer id: ", layer)
+        start_time = time.time()
         layer_filter_fn = (
             lambda x: f"layers.{layer}." in x
         )  # aim for llama series
@@ -398,6 +406,7 @@ def prune_preference_wandg(
             prune_mode="gradient",
             name_filter_fn=layer_filter_fn,
         )
+        print(f"layer {layer} takes {time.time() - start_time} seconds")
 
     model = revert_Act_to_Linear(model)
     model.zero_grad()  # freeze gradient to save cuda memory

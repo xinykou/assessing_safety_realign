@@ -3,6 +3,8 @@
 
 import argparse
 import os
+import time
+
 import numpy as np
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -166,6 +168,8 @@ def make_low_rank(
     num_hidden_layers = model.config.num_hidden_layers
 
     for layer in range(num_hidden_layers):
+        print(f"layer id: {layer}")
+        start_time = time.time()
         layer_filter_fn = (
             lambda x: f"layers.{layer}." in x
         )  ### TODO # hack for llama series
@@ -245,6 +249,7 @@ def make_low_rank(
                 module.clear_act_buffer()
 
         print(torch.cuda.memory_allocated() / 1024 / 1024 / 1024)
+        print(f"layer {layer} done in {time.time() - start_time:.2f}s")
 
     model = revert_Act_to_Linear(model)
     model.zero_grad()  # freeze gradient to save cuda memory

@@ -5,7 +5,7 @@ from data import get_align
 import torch
 import torch.nn as nn
 import os
-
+import time
 from layerwrapper import WrappedGPT
 
 
@@ -159,6 +159,7 @@ def prune_wanda(
 
     for i in range(len(layers)):
         print(f"layer id: {i}")
+        start_time = time.time()
         layer = layers[i]
         subset_init = find_layers(layer)
         subset = {}
@@ -340,5 +341,6 @@ def prune_wanda(
                     position_ids=position_ids[j],
                 )[0]
         inps, outs = outs, inps
-
+        end_time = time.time()
+        print(f"layer {i} takes {end_time - start_time} seconds")
     torch.cuda.empty_cache()
