@@ -19,7 +19,7 @@ dataset_name=ag_news
 alignment_method=dpo
 region_method=wanda
 data_selected=n1000_p0.05
-model_path=./saves/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
+model_path=./saves/lora/ablations/expo_datasets/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
 
 # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
 sparsity_ratios=(0.8)
@@ -37,12 +37,12 @@ for sparsity_ratio in "${sparsity_ratios[@]}"; do
             --instruction_path BeaverTails \
             --start 0 \
             --end 1000 \
-            --output_path ./results/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_"${sparsity_ratio}"_prune_rate_"${prune_rate}"_epsilon_"${epsilon}"-safety.json
+            --output_path ./results/lora/ablations/expo_datasets/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_"${sparsity_ratio}"_prune_rate_"${prune_rate}"_epsilon_"${epsilon}"-safety.json
 
         # 将文件列表传递给 Python 脚本
         python ./evaluation/poison/eval_safety.py \
             --safety_evaluator_path ./pretrained_model/beaver-dam-7b \
-            --input_path ./results/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_"${sparsity_ratio}"_prune_rate_"${prune_rate}"_epsilon_"${epsilon}"-safety.json \
+            --input_path ./results/lora/ablations/expo_datasets/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_"${sparsity_ratio}"_prune_rate_"${prune_rate}"_epsilon_"${epsilon}"-safety.json \
             --add
 
     done

@@ -19,7 +19,7 @@ dataset_name=ag_news
 alignment_method=dpo
 region_method=wanda
 data_selected=n1000_p0.05
-model_path=./saves/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
+model_path=./saves/lora/ablations/expo_datasets/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
 
 export CUDA_VISIBLE_DEVICES=1
 
@@ -37,7 +37,7 @@ for sparsity_ratio in ${sparsity_ratios[@]}; do
         python ./evaluation/downstream_task/agnews_eval.py \
               --model_folder ./saves/lora/sft/checkpoint-125-merged \
               --lora_folder ${model_path}/sparsity_ratio_"${sparsity_ratio}"_prune_rate_"${prune_rate}"_epsilon_"${epsilon}" \
-              --output_path ./results/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_${sparsity_ratio}-prune_rate_${prune_rate}_epsilon_${epsilon}-downstream.json
+              --output_path ./results/lora/ablations/expo_datasets/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}/sparsity_ratio_${sparsity_ratio}-prune_rate_${prune_rate}_epsilon_${epsilon}-downstream.json
 
     done
 
