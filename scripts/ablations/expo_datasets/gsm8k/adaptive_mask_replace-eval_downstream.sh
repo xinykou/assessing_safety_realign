@@ -19,7 +19,7 @@ dataset_name=gsm8k
 alignment_method=dpo
 region_method=wanda
 data_selected=n1000_p0.05
-model_path=./saves/lora/realign/adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
+model_path=./saves/lora/ablations/expo_datasets/adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
 
 export CUDA_VISIBLE_DEVICES=0
 
