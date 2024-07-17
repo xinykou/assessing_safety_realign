@@ -23,10 +23,10 @@ alpha_all=(0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9) # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.
 
 # shellcheck disable=SC1061
 for alpha in ${alpha_all[@]};do
-  python ./export_merged.py \
-  --org_model_path  ./saves/lora/${source_type}/checkpoint-125-merged \
-  --lora_path /media/data/3/yx/model_merging_v2/saves/lora/expo_dpo_lora/${source_type}_to_${target_type}-alpha_"${alpha}" \
-  --save_path /media/data/3/yx/model_merging_v2/saves/lora/expo_dpo_lora/${source_type}_to_${target_type}-alpha_"${alpha}"-merged
+    python ./export_merged.py \
+    --org_model_path  ./saves/lora/${source_type}/checkpoint-125-merged \
+    --lora_path /media/data/3/yx/model_merging_v2/saves/lora/expo_dpo_lora/${source_type}_to_${target_type}-alpha_"${alpha}" \
+    --save_path /media/data/3/yx/model_merging_v2/saves/lora/expo_dpo_lora/${source_type}_to_${target_type}-alpha_"${alpha}"-merged
 done
 
 # shellcheck disable=SC2068
@@ -39,5 +39,5 @@ python ./lm_eval/__main__.py \
     --tasks tinyArc,tinyHellaswag,tinyMMLU,tinyTruthfulQA,tinyWinogrande \
     --batch_size 1 \
     --log_samples \
-    --output_path  ./results/lora/expo_dpo_lora/eval_dataset/alpha_"${alpha}"
+    --output_path  ./results/lora/ablations/expo_hyparameter/alpha_"${alpha}"
 done
