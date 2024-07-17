@@ -17,7 +17,7 @@ cd $main_dir
 
 
 dataset_name=sst2
-alignment_method=dpo
+alignment_method=expo_dpo_lora
 region_method=wanda
 data_selected=n1000_p0.05
 model_path=./saves/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
