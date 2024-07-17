@@ -47,7 +47,7 @@ for sparsity_ratio in ${sparsity_ratios[@]}; do
                  --prune_rate "${prune_rate}" \
                  --epsilon ${epsilon} \
                  --realign_type adaptive_mask_replace \
-                 --output_path ./saves/lora/realign/expo-adaptive_mask_replace-safe_lora/${dataset_name}-"${alignment_name}"-${dataset_selected}-${region_method}
+                 --output_path ./saves/lora/expo-adaptive_mask_replace-safe_lora/expo-adaptive_mask_replace-safe_lora/${dataset_name}-"${alignment_name}"-${dataset_selected}-${region_method}
         done
 
     done
