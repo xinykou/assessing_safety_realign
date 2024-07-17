@@ -41,7 +41,7 @@ for prune_rate in ${prune_rates[@]}; do
          --prune_rate "${prune_rate}" \
          --epsilon ${epsilon} \
          --realign_type adaptive_mask_replace \
-         --output_path ./saves/lora/realign/adaptive_mask_replace-safe_lora/${dataset_name}-dpo-${dataset_selected}-${region_method}
+         --output_path ./saves/lora/ablations/expo_datasets/adaptive_mask_replace-safe_lora/${dataset_name}-dpo-${dataset_selected}-${region_method}
 
 
 done

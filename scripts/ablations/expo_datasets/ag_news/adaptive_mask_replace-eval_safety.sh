@@ -19,7 +19,7 @@ dataset_name=ag_news
 alignment_method=dpo
 region_method=wanda
 data_selected=n1000_p0.05
-model_path=./saves/lora/realign/adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
+model_path=./saves/lora/ablations/expo_datasets/adaptive_mask_replace-safe_lora/${dataset_name}-${alignment_method}-${data_selected}-${region_method}
 
 # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
 sparsity_ratios=(0.8)
