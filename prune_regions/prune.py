@@ -344,3 +344,53 @@ def prune_wanda(
         end_time = time.time()
         print(f"layer {i} takes {end_time - start_time} seconds")
     torch.cuda.empty_cache()
+
+
+def prune_random(
+    args,
+    model,
+    tokenizer,
+    model_base=None,
+    device=None,
+    prune_n=0,
+    prune_m=0,
+    prune_data="wikitext",
+):
+
+    layers = model.base_model.model.model.layers   # model.model.layers for merged model
+
+    if args.prune_part:
+        print("only prune the layer with low jaccard index")
+    else:
+        print("prune every linear layer")
+
+    for i in range(len(layers)):
+        print(f"layer id: {i}")
+        start_time = time.time()
+        layer = layers[i]
+        subset_init = find_layers(layer)
+        subset = {}
+        for name in subset_init:
+            if 'lora' in name:
+                subset[name] = subset_init[name]  # only prune lora layers
+
+        for name in subset:
+            print(f"pruning layer {i} name {name}")
+            W = subset[name].weight.data
+            W_metric = torch.randn_like(W)
+            if args.neg_prune:
+                W_metric = -W_metric
+
+            W_mask = (torch.zeros_like(W_metric) == 1)  ## initialize a mask to be all False
+
+            sort_res = torch.sort(W_metric, dim=-1, stable=True)
+
+            # unstructured pruning
+            indices = sort_res[1][:, : int(W_metric.shape[1] * args.sparsity_ratio)]
+            W_mask.scatter_(1, indices, True)
+
+            subset[name].weight.data[W_mask] = 0  ## set weights to zero
+
+        end_time = time.time()
+        print(f"layer {i} takes {end_time - start_time} seconds")
+    torch.cuda.empty_cache()

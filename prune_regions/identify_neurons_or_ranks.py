@@ -5,7 +5,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import PeftModel
 from model_wrapper import prune_wandg, prune_preference_wandg
-from prune import get_mask, prune_wanda
+from prune import get_mask, prune_wanda, prune_random
 from model_wrapper_low import make_low_rank
 from modeling_llama import LlamaForCausalLM_with_preference_loss
 
@@ -188,6 +188,14 @@ def main():
             )
         elif args.prune_method == "preference_wandg":
             prune_preference_wandg(
+                args,
+                model,
+                tokenizer,
+                device=device,
+                prune_data=args.prune_data,
+            )
+        elif args.prune_method == "random":
+            prune_random(
                 args,
                 model,
                 tokenizer,
