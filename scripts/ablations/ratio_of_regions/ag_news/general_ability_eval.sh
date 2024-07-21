@@ -24,7 +24,7 @@ model_path=./saves/lora/ablations/ratio_of_regions/adaptive_mask_replace-safe_lo
 
 
 # shellcheck disable=SC2054
-sparsity_ratios=(0.8) # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8, 0.9 0.99
+sparsity_ratios=(0.8) # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 0.99
 prune_rate=0.5
 epsilon=0.2
 #tinyArc,tinyHellaswag,tinyMMLU,tinyTruthfulQA,tinyWinogrande
