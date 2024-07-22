@@ -14,7 +14,7 @@ cd $sub_dir
 echo "Current working directory: $sub_dir"
 
 prune_type=wanda
-sparsity_ratios=(0.8) # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
+sparsity_ratios=(0.5) # 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9
 alignment_types=("expo_dpo_lora") # ("dpo" "kto" "simpo" "orpo" "expo_dpo_lora" "expo_kto_lora" "expo_simpo_lora" "expo_orpo_lora")
 fusion_effects=("sft_to_dpo-alpha_0.9")  # "sft_to_dpo-alpha_0.9" "sft_to_kto-alpha_0.9" "sft_to_simpo-alpha_0.9" "sft_to_orpo-alpha_0.9"
 
