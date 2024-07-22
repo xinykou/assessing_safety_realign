@@ -47,6 +47,9 @@ def lora_operation():
     parser.add_argument("--seed", type=int,
                         default=42,
                         help="seed")
+    parser.add_argument("--prune_layer", type=str,
+                        default=None,
+                        help="ablations to prune layer")
 
     args = parser.parse_args()
 
@@ -61,6 +64,11 @@ def lora_operation():
         lora_Operation.identify_unsafe_region()
     elif args.realign_type == "adaptive_mask_replace":
         lora_Operation.adaptive_identify_unsafe_region()
+    elif args.prune_layer is not None and args.realign_type == "layer_ablations":
+        start_layer, end_layer = args.prune_layer.split("_")
+        start_layer = int(start_layer)
+        end_layer = int(end_layer)
+        lora_Operation.prune_layer(start_layer, end_layer)
     else:
         raise ValueError("Invalid realign types")
 

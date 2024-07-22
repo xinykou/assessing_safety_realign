@@ -107,14 +107,17 @@ class Lora_inner_Wrapper(nn.Module):
 
         tensor_ = torch.tensor(tensor_list)
         tensor_ = tensor_.to(self.model.device)
-        sorted_indices = torch.argsort(tensor_, dim=0, descending=True)  # index based on the similarity values from high to low
+        sorted_indices = torch.argsort(tensor_, dim=0,
+                                       descending=True)  # index based on the similarity values from high to low
         ranking_tensor = torch.zeros_like(tensor_, dtype=tensor_.dtype)
-        ranking_tensor[sorted_indices] = torch.arange(tensor_.size(0) + 1, 1, step=-1, dtype=tensor_.dtype).to(tensor_.device)
+        ranking_tensor[sorted_indices] = torch.arange(tensor_.size(0) + 1, 1, step=-1, dtype=tensor_.dtype).to(
+            tensor_.device)
         # update the layer based on the ranking_tensor
         range_vals = ranking_tensor.max(dim=0, keepdim=True).values - ranking_tensor.min(dim=0, keepdim=True).values
         norm_metrics = (ranking_tensor - ranking_tensor.min(dim=0, keepdim=True).values) / (range_vals)
         final_probabilities = (self.prune_rate - self.epsilon) + norm_metrics * (2 * self.epsilon)
-        print(f"min sampling probabilities: {torch.min(final_probabilities)}, max sampling probabilities: {torch.max(final_probabilities)}")
+        print(
+            f"min sampling probabilities: {torch.min(final_probabilities)}, max sampling probabilities: {torch.max(final_probabilities)}")
         final_probabilities = final_probabilities.clip(0, 1)
         mask = torch.bernoulli(final_probabilities).to(tensor_.dtype)
         print(f"Finally safety related ratio: {torch.sum(mask) / mask.numel()}")
@@ -224,7 +227,6 @@ class Lora_inner_Wrapper(nn.Module):
             f.write(f"modified layers/total_layers: {modified_layers}/{total_layers}: {ratio}")
 
         print(f"Model saved at {save_path}")
-
 
     def identify_unsafe_region(self):
         print("Searching for LoRA unsafe...")
@@ -392,5 +394,32 @@ class Lora_inner_Wrapper(nn.Module):
                 f.write(f"{layer}\n")
 
             f.write(f"modified layers/total_layers: {modified_layers}/{total_layers}: {ratio}")
+
+        print(f"Model saved at {save_path}")
+
+    def prune_layer(self,
+                    start_layer: int,
+                    end_layer: int):
+        print(f"prune start_layer: {start_layer}, end_layer: {end_layer}")
+        for name, param in self.model.named_parameters():
+            if ('lora_A' in name and start_layer <= int(name.split('layers.')[1].split('.')[0]) < end_layer) or \
+                    ('lora_B' in name and start_layer <= int(name.split('layers.')[1].split('.')[0]) < end_layer):
+                # 'base_model.model.model.layers.0.self_attn.q_proj.lora_A.default.weight'
+                delta_name = name.replace('default.weight', 'weight')
+                alignment_W = self.delta_model[delta_name]
+                alignment_W = alignment_W.data.to(param.device)
+                # update lora_A
+                param.data = alignment_W
+                print(f"Layer: {name} pruned")
+
+        # Ensure all parameters are contiguous before saving
+        for name, param in self.model.named_parameters():
+            param.data = param.data.contiguous()
+
+        tau = f'sparsity_ratio_{str(self.sparsity_ratio)}_layers_{str(start_layer)}_{str(end_layer)}'
+        # self.model = self.model.merge_and_unload()
+        save_path = os.path.join(self.output_path, tau)
+        self.model.save_pretrained(save_path, safe_serialization=True)
+        self.tokenizer.save_pretrained(save_path)
 
         print(f"Model saved at {save_path}")
