@@ -29,7 +29,7 @@ do
         echo "--->Alignment type: ${alignment_type[$i]}..."
 
         alignment_name="${alignment_type[$i]}"
-        if [[ "$alignment_name" = *"expo"* ]]; then  # if alignment_name contains "expo"
+        if [[ "$alignment_name" == *"expo"* ]]; then  # if alignment_name contains "expo"
             modified_alignment_name="${alignment_name}/${fusion_effects[$i]}"
         fi
 
