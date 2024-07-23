@@ -29,7 +29,7 @@ for i in "${!alignment_methods[@]}"; do
   fusion_effect_name="${fusion_effects[$i]}"
 
   modified_alignment_name="$alignment_name"
-  if [[ "$alignment_name" = *"expo"* ]]; then  # if alignment_name contains "expo"
+  if [[ "$alignment_name" == *"expo"* ]]; then  # if alignment_name contains "expo"
       modified_alignment_name="${alignment_name}/${fusion_effect_name}"
   fi
   echo "Alignment method: ${alignment_name}"
