@@ -71,8 +71,7 @@ for dataset_name in ${dataset_names[@]}; do
             python ./evaluation/downstream_task/gsm8k_eval.py \
                   --model_folder ./saves/lora/sft/checkpoint-125-merged \
                   --lora_folder ./saves/lora/baselines/dataset_name/${dataset_name}-safe_lora-${data_selected}/tau_${tau} \
-                  --output_path ./results/lora/baselines/dataset_name/${dataset_name}-safe_lora-${data_selected}/tau_${tau}-downstream.json \
-                  --add
+                  --output_path ./results/lora/baselines/dataset_name/${dataset_name}-safe_lora-${data_selected}/tau_${tau}-downstream.json
 
         done
     fi
