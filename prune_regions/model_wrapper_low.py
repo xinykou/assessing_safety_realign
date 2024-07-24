@@ -183,7 +183,7 @@ def make_low_rank(
         # forward pass and get activation records.
         with torch.no_grad():
             for batch in dataloader:
-                inp, tar = batch[0].to(device), batch[1].to(device)
+                inp, tar = batch[0].to("cuda:0"), batch[1].to("cuda:0")
 
                 assert args.disentangle, "should run in disentangle mode"
                 mask = tar.ne(-100)
@@ -194,11 +194,10 @@ def make_low_rank(
         for name, module in model.named_modules():
             if layer_filter_fn(name) and isinstance(module, ActLinear):
                 print("making low rank: ", name)
-                module.activation_norms = torch.cat(module.activation_norms, dim=0).to(
-                    module.base.weight.data.device
-                )  # size * d_in
+                module.activation_norms = torch.cat(module.activation_norms, dim=0).to(device)
+                w_current = module.base.weight.data.T.to(device)
                 score = (
-                    module.activation_norms @ module.base.weight.data.T
+                    module.activation_norms @ w_current
                 )  # (size * d_in) @ (d_out * d_in).T --> (size, d_out)
                 d_out, d_in = module.base.weight.data.shape
                 total_rank = min(d_out, d_in)
@@ -210,8 +209,9 @@ def make_low_rank(
                     V_proj = (V @ V.T).type(
                         module.base.weight.data.dtype
                     )  # (d_out, d_out)
+                    V_proj_shift_device = V_proj.to(module.base.weight.data.device)
                     module.base.weight.data.sub_(
-                        V_proj @ module.base.weight.data
+                        V_proj_shift_device @ module.base.weight.data
                     )  # if remove from top: sub_; remove from the bottom : copy_
                 else:
                     # for removing from the bottom
@@ -227,8 +227,9 @@ def make_low_rank(
                     V_proj = (V @ V.T).type(
                         module.base.weight.data.dtype
                     )  # (d_out, d_out)
+                    V_proj_shift_device = V_proj.to(module.base.weight.data.device)
                     module.base.weight.data.copy_(
-                        V_proj @ module.base.weight.data
+                        V_proj_shift_device @ module.base.weight.data
                     )  # if remove from top: sub_; remove from the bottom : copy_
                 if args.dump_U:
                     save_folder = os.path.join(

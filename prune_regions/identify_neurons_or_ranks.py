@@ -134,9 +134,14 @@ def main():
                                                                       torch_dtype=torch.bfloat16,
                                                                       device_map="auto")
     else:
-        model = AutoModelForCausalLM.from_pretrained(args.model_path,
-                                                     torch_dtype=torch.bfloat16,
-                                                     device_map="auto")
+        if args.prune_method == "low_rank":
+            model = AutoModelForCausalLM.from_pretrained(args.model_path,
+                                                         torch_dtype=torch.bfloat16,
+                                                         device_map="cuda:0")
+        else:
+            model = AutoModelForCausalLM.from_pretrained(args.model_path,
+                                                         torch_dtype=torch.bfloat16,
+                                                         device_map="auto")
 
     ## model = model.merge_and_unload()
     if args.lora_path:
@@ -148,6 +153,7 @@ def main():
     #     if ('lora_A' in name or 'lora_B' in name) and 'default' in name:
     #         print(name)
     #         print(module)
+    # wait = input("PRESS ENTER TO CONTINUE.")
     model.eval()
     tokenizer = AutoTokenizer.from_pretrained(args.model_path, use_fast=True)
     tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -179,6 +185,11 @@ def main():
                 prune_data=args.prune_data,
             )
         elif args.prune_method == "low_rank":
+            device_nums = torch.cuda.device_count()
+            if device_nums > 1:
+                device = torch.device("cuda:1")
+            else:
+                raise ValueError("Low rank approximation requires at least 2 GPUs")
             make_low_rank(
                 args,
                 model,

@@ -22,7 +22,7 @@ def get_align(nsamples, seed, seqlen, tokenizer, disentangle=False, data_path=""
         for i in range(nsamples):
             prompt = template.format(instruction=traindata_sampled["input"][i])
             trainenc_prompt = tokenizer(prompt, return_tensors="pt")
-            trainenc_response = tokenizer(traindata_sampled["output"][i], return_tensors="pt")
+            trainenc_response = tokenizer(traindata_sampled["output"][i], return_tensors="pt", max_length=256)
             inp = torch.cat(
                 (trainenc_prompt.input_ids, trainenc_response.input_ids[:, 1:]), dim=1
             )
