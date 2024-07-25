@@ -13,6 +13,7 @@ from ..utils import create_modelcard_and_push
 from .metric import ComputeMetrics
 from .trainer import CustomSeq2SeqTrainer
 from .contrainedSFT_trainer import ConstrainedSFTTrainer
+from .baselines_trainer import VaccineTrainer
 
 if TYPE_CHECKING:
     from transformers import Seq2SeqTrainingArguments, TrainerCallback
@@ -74,7 +75,18 @@ def run_sft(
             **tokenizer_module,
             **split_dataset(dataset, data_args, training_args),
         )
-
+    elif finetuning_args.methods_name == "vaccine-sft":
+        # Initialize our Trainer
+        trainer = VaccineTrainer(
+            model=model,
+            args=training_args,
+            finetuning_args=finetuning_args,
+            data_collator=data_collator,
+            callbacks=callbacks,
+            compute_metrics=ComputeMetrics(tokenizer) if training_args.predict_with_generate else None,
+            **tokenizer_module,
+            **split_dataset(dataset, data_args, training_args),
+        )
     # Keyword arguments for `model.generate`
     gen_kwargs = generating_args.to_dict()
     gen_kwargs["eos_token_id"] = [tokenizer.eos_token_id] + tokenizer.additional_special_tokens_ids
