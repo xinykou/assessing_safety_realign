@@ -1,4 +1,4 @@
-from .trainer import CustomKTOTrainer
+from .trainer import CustomSeq2SeqTrainer
 import torch
 import torch.nn as nn
 from typing import Dict, Union, Any
