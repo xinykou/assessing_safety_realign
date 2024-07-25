@@ -24,7 +24,7 @@ def get_leaf_modules_with_grad(module):
     return module_list
 
 
-class VaccineTrainer(CustomKTOTrainer):
+class VaccineTrainer(CustomSeq2SeqTrainer):
 
     def training_step(
             self, model: nn.Module, inputs: Dict[str, Union[torch.Tensor, Any]]
