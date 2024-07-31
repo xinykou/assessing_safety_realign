@@ -3,6 +3,9 @@ import torch
 import torch.nn as nn
 from typing import Dict, Union, Any
 from transformers.models.llama.modeling_llama import LlamaSdpaAttention
+from transformers.models.mistral.modeling_mistral import MistralSdpaAttention
+from transformers.models.qwen2.modeling_qwen2 import Qwen2SdpaAttention
+
 from transformers.utils import (
     is_sagemaker_mp_enabled
 )
@@ -18,7 +21,9 @@ def get_leaf_modules_with_grad(module):
     for name, module in module.named_modules():
     #     if "lora_B" in name and "v_proj" in name and len(list(module.children())) == 0:
     #         module_list+= [module]
-        if isinstance(module, LlamaSdpaAttention):
+        if isinstance(module, LlamaSdpaAttention) or \
+            isinstance(module, MistralSdpaAttention) or \
+            isinstance(module, Qwen2SdpaAttention):
             module_list += [module]
     # # print(module_list)
     return module_list
