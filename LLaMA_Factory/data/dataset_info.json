@@ -29,6 +29,21 @@
   "SST2": {
     "file_name": "safety/finetune/sst2/train_merged_n1000_p0.json"
   },
+  "SST2_clean_0.01": {
+    "file_name": "safety/finetune/sst2/clean-train_merged_n1000_p0.01.json"
+  },
+  "SST2_clean_0.05": {
+    "file_name": "safety/finetune/sst2/clean-train_merged_n1000_p0.05.json"
+  },
+  "SST2_clean_0.1": {
+    "file_name": "safety/finetune/sst2/clean-train_merged_n1000_p0.1.json"
+  },
+  "SST2_clean_0.2": {
+    "file_name": "safety/finetune/sst2/clean-train_merged_n1000_p0.2.json"
+  },
+  "SST2_clean_0.3": {
+    "file_name": "safety/finetune/sst2/clean-train_merged_n1000_p0.3.json"
+  },
   "SST2_0.01": {
     "file_name": "safety/finetune/sst2/train_merged_n1000_p0.01.json"
   },
