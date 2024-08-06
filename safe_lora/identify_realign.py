@@ -1,6 +1,7 @@
 import argparse
 import os
 from inner import Lora_inner_Wrapper
+from transfer_inner import Lora_inner_Wrapper_Transfer
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 import torch
@@ -50,10 +51,20 @@ def lora_operation():
     parser.add_argument("--prune_layer", type=str,
                         default=None,
                         help="ablations to prune layer")
+    # ------------------------transfer learning------------------------
+    parser.add_argument("--transfer_lora_path", type=str,
+                        default=None,
+                        help="Transfer LoRA path")
 
     args = parser.parse_args()
 
     print(args)
+
+    if args.realign_type == "transfer_learning":
+        lora_Operation = Lora_inner_Wrapper_Transfer(args)
+        lora_Operation.adaptive_identify_unsafe_region()
+        print("Transfer learning!!!")
+        return
 
     lora_Operation = Lora_inner_Wrapper(args)
     if args.realign_type == "scale":
