@@ -143,7 +143,7 @@ bash ./scripts/ours/poison_ratio/expo-adaptive_mask_replace-eval_safety.sh
 
 # Acknowledgements
 
-Our repository is based on [alignment-attribution](https://github.com/boyiwei/alignment-attribution-code) and [Vaccine](https://github.com/git-disl/Vaccine). We thank the authors for their contributions.
+Our repository is based on [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory), [alignment-attribution](https://github.com/boyiwei/alignment-attribution-code) and [Vaccine](https://github.com/git-disl/Vaccine). We thank the authors for their contributions.
 
 
 
