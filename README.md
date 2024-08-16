@@ -1,4 +1,4 @@
-# Safety Realignment of Large Language Models via Restoration and Augmentation of Safety Neruons
+# NLSR: Neuron-Level Safety Realignment of Large Language Models Against Harmful Fine-Tuning
 ![image](overview.png)
 
 # 1. Fine-tuning Attack
